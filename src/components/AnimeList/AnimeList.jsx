@@ -1,4 +1,5 @@
 import * as React from "react";
+import styles from "./animeList.module.scss";
 import PropTypes from "prop-types";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -124,12 +125,12 @@ export default function AnimeList() {
   );
 
   return (
-    <div>
-      <Box sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }}>
+    <div className={styles.body}>
+      <Box sx={{ width: "30%", position: "absolute", top: "1%", right: "1%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
           <TableContainer>
             <Table
-              sx={{ minWidth: 750 }}
+              sx={{ minWidth: 500 }}
               aria-labelledby="tableTitle"
               size={"medium"}
             >
