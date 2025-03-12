@@ -178,7 +178,12 @@ export default function MangaList() {
   };
 
   return (
-    <div className={styles.body}>
+    <div
+      className="h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: "url(/assets/wallpaper-sitopersonale-manga.jpg)",
+      }}
+    >
       <TableContainer
         component={Paper}
         sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }}

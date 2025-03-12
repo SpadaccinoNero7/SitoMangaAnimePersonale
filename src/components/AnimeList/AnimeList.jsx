@@ -125,7 +125,12 @@ export default function AnimeList() {
   );
 
   return (
-    <div className={styles.body}>
+    <div
+      className="h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: "url(/assets/wallpaper-sitopersonale-anime.jpeg)",
+      }}
+    >
       <Box sx={{ width: "30%", position: "absolute", top: "1%", right: "1%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
           <TableContainer>
