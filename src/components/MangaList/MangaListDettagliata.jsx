@@ -22,6 +22,7 @@ import { visuallyHidden } from "@mui/utils";
 import { Link, useParams } from "react-router-dom";
 import { useFetch } from "../customHooks/useFetch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import styles from "./mangaList.module.scss";
 
 /* function createData(id, volumes, date, price) {
   return {
@@ -269,85 +270,87 @@ export default function MangaListDettagliata() {
   );
 
   return (
-    <Box sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar
-        /* numSelected={selected.length} */
-        /* handleRemove={handleRemove} */
-        />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={"medium"}
-          >
-            <EnhancedTableHead
-              /* numSelected={selected.length} */
-              order={order}
-              orderBy={orderBy}
-              /* onSelectAllClick={handleSelectAllClick} */
-              onRequestSort={handleRequestSort}
-              rowCount={mangaDetails.length}
-            />
-            <TableBody>
-              {visibleRows.map((manga, index) => {
-                /* const isItemSelected = selected.includes(manga.id); */
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, manga.id)}
-                    role="checkbox"
-                    /* aria-checked={isItemSelected} */
-                    tabIndex={-1}
-                    key={manga.volumes}
-                    /* selected={isItemSelected} */
-                  >
-                    <TableCell padding="checkbox"></TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {manga.volumes}
-                    </TableCell>
-                    <TableCell align="center">{manga.date}</TableCell>
-                    <TableCell align="center">{manga.price}</TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 33 * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <div className="flex justify-between items-center">
-          <Link to="/mangalist" className="ml-10">
-            <ArrowBackIcon />
-          </Link>
-          <TablePagination
-            component="div"
-            labelDisplayedRows={() => {
-              ``;
-            }}
-            count={mangaDetails.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[]}
+    <div className={styles.body}>
+      <Box sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }}>
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <EnhancedTableToolbar
+          /* numSelected={selected.length} */
+          /* handleRemove={handleRemove} */
           />
-        </div>
-      </Paper>
-    </Box>
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={"medium"}
+            >
+              <EnhancedTableHead
+                /* numSelected={selected.length} */
+                order={order}
+                orderBy={orderBy}
+                /* onSelectAllClick={handleSelectAllClick} */
+                onRequestSort={handleRequestSort}
+                rowCount={mangaDetails.length}
+              />
+              <TableBody>
+                {visibleRows.map((manga, index) => {
+                  /* const isItemSelected = selected.includes(manga.id); */
+                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, manga.id)}
+                      role="checkbox"
+                      /* aria-checked={isItemSelected} */
+                      tabIndex={-1}
+                      key={manga.volumes}
+                      /* selected={isItemSelected} */
+                    >
+                      <TableCell padding="checkbox"></TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {manga.volumes}
+                      </TableCell>
+                      <TableCell align="center">{manga.date}</TableCell>
+                      <TableCell align="center">{manga.price}</TableCell>
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: 33 * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div className="flex justify-between items-center">
+            <Link to="/mangalist" className="ml-10">
+              <ArrowBackIcon />
+            </Link>
+            <TablePagination
+              component="div"
+              labelDisplayedRows={() => {
+                ``;
+              }}
+              count={mangaDetails.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPageOptions={[]}
+            />
+          </div>
+        </Paper>
+      </Box>
+    </div>
   );
 }
 

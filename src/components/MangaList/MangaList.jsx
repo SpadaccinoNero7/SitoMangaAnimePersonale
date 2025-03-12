@@ -23,8 +23,9 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { useFetch } from "../customHooks/useFetch"; // Import the useFetch hook
+import { useFetch } from "../customHooks/useFetch";
 import { Link } from "react-router-dom";
+import HomeIcon from "@mui/icons-material/Home";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -177,70 +178,75 @@ export default function MangaList() {
   };
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }}
-    >
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow sx={{ backgroundColor: "black" }}>
-            <TableCell />
-            <TableCell sx={{ color: "white" }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Titolo
-              </Typography>
-            </TableCell>
-            <TableCell sx={{ color: "white" }} align="right">
-              <Typography variant="h6" gutterBottom component="div">
-                Autore
-              </Typography>
-            </TableCell>
-            <TableCell sx={{ color: "white" }} align="right">
-              <Typography variant="h6" gutterBottom component="div">
-                Completata
-              </Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : data
-          ).map((row) => (
-            <Row key={row.title} row={row} />
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
+    <div className={styles.body}>
+      <TableContainer
+        component={Paper}
+        sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }}
+      >
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "black" }}>
+              <TableCell />
+              <TableCell sx={{ color: "white" }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  Titolo
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ color: "white" }} align="right">
+                <Typography variant="h6" gutterBottom component="div">
+                  Autore
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ color: "white" }} align="right">
+                <Typography variant="h6" gutterBottom component="div">
+                  Completata
+                </Typography>
+              </TableCell>
             </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[]}
-              labelDisplayedRows={() => {
-                ``;
-              }}
-              colSpan={3}
-              count={data.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    "aria-label": "rows per page",
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : data
+            ).map((row) => (
+              <Row key={row.title} row={row} />
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+          <TableFooter>
+            <TableRow className="flex justify-between items-center">
+              <Link to="/">
+                <HomeIcon style={{ margin: "10%" }} />
+              </Link>
+              <TablePagination
+                rowsPerPageOptions={[]}
+                labelDisplayedRows={() => {
+                  ``;
+                }}
+                colSpan={3}
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
                   },
-                  native: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }
