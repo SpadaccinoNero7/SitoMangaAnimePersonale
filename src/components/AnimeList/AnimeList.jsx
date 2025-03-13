@@ -124,87 +124,94 @@ export default function AnimeList() {
     [order, orderBy, page, rowsPerPage, data]
   );
 
+  const height = window.innerWidth;
+
   return (
     <div
-      className="h-screen bg-cover bg-center"
+      className="h-screen bg-cover bg-right-bottom"
       style={{
-        backgroundImage: "url(/assets/wallpaper-sitopersonale-anime.jpeg)",
+        backgroundImage: "url(/assets/wallpaper-sitopersonale-anime.jpg)",
       }}
     >
-      <Box sx={{ width: "30%", position: "absolute", top: "1%", right: "1%" }}>
-        <Paper sx={{ width: "100%", mb: 2 }}>
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 500 }}
-              aria-labelledby="tableTitle"
-              size={"medium"}
-            >
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={data ? data.length : 0}
-              />
-              <TableBody>
-                {visibleRows.map((anime, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+      <div className="flex h-[50%]"></div>
+      <div className="flex h-[50%] justify-center items-end">
+        <Box className="xl:w-[30%]">
+          {" "}
+          {/* sx={{ width: "30%", position: "absolute", top: "1%", right: "1%" }} */}
+          <Paper sx={{ width: "100%", mb: 2 }}>
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 500 }}
+                aria-labelledby="tableTitle"
+                size={height <= 1270 ? "small" : "medium"}
+              >
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                  rowCount={data ? data.length : 0}
+                />
+                <TableBody>
+                  {visibleRows.map((anime, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={anime.id}
-                    >
-                      <TableCell padding="checkbox"></TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={anime.id}
                       >
-                        {anime.title}
-                      </TableCell>
-                      <TableCell align="right">
-                        {anime.isCompleted ? (
-                          <CheckIcon color="success" />
-                        ) : (
-                          <CloseIcon color="warning" />
-                        )}
-                      </TableCell>
+                        <TableCell padding="checkbox"></TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {anime.title}
+                        </TableCell>
+                        <TableCell align="right">
+                          {anime.isCompleted ? (
+                            <CheckIcon color="success" />
+                          ) : (
+                            <CloseIcon color="warning" />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: 33 * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 33 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <div className="flex justify-between items-center">
-            <Link to="/" className="ml-10">
-              <ArrowBackIcon />
-            </Link>
-            <TablePagination
-              component="div"
-              labelDisplayedRows={() => {
-                ``;
-              }}
-              count={data ? data.length : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPageOptions={[]}
-            />
-          </div>
-        </Paper>
-      </Box>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <div className="flex justify-between items-center">
+              <Link to="/" className="ml-10">
+                <ArrowBackIcon />
+              </Link>
+              <TablePagination
+                component="div"
+                labelDisplayedRows={() => {
+                  ``;
+                }}
+                count={data ? data.length : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPageOptions={[]}
+              />
+            </div>
+          </Paper>
+        </Box>
+      </div>
     </div>
   );
 }

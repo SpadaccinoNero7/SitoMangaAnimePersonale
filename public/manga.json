@@ -64,5 +64,43 @@
         "price": 6
       }
     ]
+  },
+  {
+    "id": 3,
+    "title": "title3",
+    "author": "author3",
+    "isCompleted": true,
+    "details": [
+      {
+        "volumes": 1,
+        "date": "2022-05-25",
+        "price": 8
+      },
+      {
+        "volumes": 2,
+        "date": "2023-05-25",
+        "price": 4
+      },
+      {
+        "volumes": 3,
+        "date": "2020-10-12",
+        "price": 2
+      },
+      {
+        "volumes": 4,
+        "date": "2020-05-25",
+        "price": 6
+      },
+      {
+        "volumes": 5,
+        "date": "2020-05-25",
+        "price": 6
+      },
+      {
+        "volumes": 6,
+        "date": "non ricordo",
+        "price": 6
+      }
+    ]
   }
 ]
