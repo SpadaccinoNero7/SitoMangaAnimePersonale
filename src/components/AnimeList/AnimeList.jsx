@@ -124,7 +124,7 @@ export default function AnimeList() {
     [order, orderBy, page, rowsPerPage, data]
   );
 
-  const height = window.innerWidth;
+  const width = window.innerWidth;
 
   return (
     <div
@@ -143,7 +143,7 @@ export default function AnimeList() {
               <Table
                 sx={{ minWidth: 500 }}
                 aria-labelledby="tableTitle"
-                size={height <= 1270 ? "small" : "medium"}
+                size={width <= 1272 ? "small" : "medium"}
               >
                 <EnhancedTableHead
                   order={order}

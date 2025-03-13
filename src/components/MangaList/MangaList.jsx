@@ -160,7 +160,7 @@ Row.propTypes = {
 export default function MangaList() {
   const { data, loading, error } = useFetch("/manga.json");
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(3);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -178,23 +178,23 @@ export default function MangaList() {
   };
 
   const width = window.innerWidth;
-  console.log(width);
 
   return (
     <div
-      className="h-screen bg-cover bg-center"
+      className="h-screen bg-cover bg-center flex justify-end items-center pr-5"
       style={{
         backgroundImage: "url(/assets/wallpaper-sitopersonale-manga.jpg)",
       }}
     >
-      <div className="flex h-[50%]"></div>
-      <div className="flex h-[50%] w-[100%] self-end justify-self-center">
+      <div className="w-[50%]">
         <TableContainer
           component={Paper}
           /* sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }} */
-          className="w-[50%]"
         >
-          <Table aria-label="collapsible table">
+          <Table
+            aria-label="collapsible table"
+            size={width <= 1272 ? "small" : "medium"}
+          >
             <TableHead>
               <TableRow sx={{ backgroundColor: "black" }}>
                 <TableCell />
@@ -233,9 +233,11 @@ export default function MangaList() {
             </TableBody>
             <TableFooter>
               <TableRow className="flex justify-between items-center">
-                <Link to="/">
-                  <HomeIcon style={{ margin: "10%" }} />
-                </Link>
+                <TableCell colSpan={1}>
+                  <Link to="/">
+                    <HomeIcon />
+                  </Link>
+                </TableCell>
                 <TablePagination
                   rowsPerPageOptions={[]}
                   labelDisplayedRows={() => {
