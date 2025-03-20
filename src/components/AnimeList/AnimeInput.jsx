@@ -1,18 +1,32 @@
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import BlockIcon from "@mui/icons-material/Block";
 import "./HoverTextCheckbox.css";
 
 export default function AnimeInput() {
   const [input, setInput] = useState("");
   const [error, setError] = useState(null);
   const [checkCompleted, setCheckCompleted] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
   const handleCompleted = () => {
     setCheckCompleted(!checkCompleted);
   };
+
+  const handleValidation = () => {
+    if (input) {
+      setIsValid(true);
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    handleValidation();
+  }, [input]);
 
   const handleAdd = () => {
     if (!input.trim()) {
@@ -27,7 +41,6 @@ export default function AnimeInput() {
         completed: checkCompleted,
       })
       .then((res) => {
-        console.log(res.data);
         setInput("");
         setCheckCompleted(false);
         setError(null);
@@ -39,7 +52,7 @@ export default function AnimeInput() {
   };
 
   return (
-    <div className="bg-red-400 w-fit p-4">
+    <div className="bg-red-400 p-4 flex items-center justify-around">
       <input
         type="text"
         value={input}
@@ -51,12 +64,12 @@ export default function AnimeInput() {
         {checkCompleted ? (
           <CheckBoxIcon
             onClick={handleCompleted}
-            className="cursor-pointer text-white"
+            className="cursor-pointer text-white ml-2"
           />
         ) : (
           <CheckBoxOutlineBlankIcon
             onClick={handleCompleted}
-            className="cursor-pointer hover:text-white"
+            className="cursor-pointer hover:text-white ml-2"
           />
         )}
         <span className="tooltip-text">
@@ -65,7 +78,18 @@ export default function AnimeInput() {
             : "Segna come completato"}
         </span>
       </div>
-      <AddIcon onClick={handleAdd} className="cursor-pointer ml-2" />
+      <div className="tooltip">
+        {isValid ? (
+          <AddIcon onClick={handleAdd} className="cursor-pointer ml-2" />
+        ) : (
+          <BlockIcon className="ml-2" />
+        )}
+        <span className="tooltip-text">
+          {isValid
+            ? "Aggiungi alla lista!"
+            : "Scrivi qualcosa per aggiungere..."}
+        </span>
+      </div>
       {error && <p className="text-red-600 mt-2">{error}</p>}
     </div>
   );

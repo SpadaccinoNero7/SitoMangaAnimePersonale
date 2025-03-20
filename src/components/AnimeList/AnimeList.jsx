@@ -141,11 +141,11 @@ export default function AnimeList() {
     [order, orderBy, page, rowsPerPage, data]
   );
 
-  console.log(
+  /*   console.log(
     visibleRows.map((el) => {
       return el.title;
     })
-  );
+  ); */
   const width = window.innerWidth;
 
   return (

@@ -1,18 +1,33 @@
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import BlockIcon from "@mui/icons-material/Block";
+import "../AnimeList/HoverTextCheckbox.css";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");
   const [inputAuthor, setInputAuthor] = useState("");
   const [error, setError] = useState(null);
   const [checkCompleted, setCheckCompleted] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
   const handleCompleted = () => {
     setCheckCompleted(!checkCompleted);
   };
+
+  const handleValidation = () => {
+    if (inputTitle && inputAuthor) {
+      setIsValid(true);
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    handleValidation();
+  }, [inputTitle, inputAuthor]);
 
   const handleAdd = () => {
     if (!inputTitle.trim()) {
@@ -62,12 +77,12 @@ export default function MangaListInput() {
         {checkCompleted ? (
           <CheckBoxIcon
             onClick={handleCompleted}
-            className="cursor-pointer text-white"
+            className="cursor-pointer text-white ml-2"
           />
         ) : (
           <CheckBoxOutlineBlankIcon
             onClick={handleCompleted}
-            className="cursor-pointer hover:text-white"
+            className="cursor-pointer hover:text-white ml-2"
           />
         )}
         <span className="tooltip-text">
@@ -76,7 +91,18 @@ export default function MangaListInput() {
             : "Segna come completato"}
         </span>
       </div>
-      <AddIcon onClick={handleAdd} className="cursor-pointer ml-2" />
+      <div className="tooltip">
+        {isValid ? (
+          <AddIcon onClick={handleAdd} className="cursor-pointer ml-2" />
+        ) : (
+          <BlockIcon className="ml-2" />
+        )}
+        <span className="tooltip-text">
+          {isValid
+            ? "Aggiungi alla lista!"
+            : "Scrivi qualcosa per aggiungere..."}
+        </span>
+      </div>
       {error && <p className="text-white">{error}</p>}
     </div>
   );
