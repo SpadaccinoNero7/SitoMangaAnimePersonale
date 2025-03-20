@@ -1,4 +1,5 @@
 import styles from "./mangaList.module.scss";
+import DeleteIcon from "@mui/icons-material/Delete";
 import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -26,6 +27,7 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import { useFetch } from "../customHooks/useFetch";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
+import MangaListInput from "./MangaListInput";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -118,11 +120,14 @@ function Row(props) {
           <Typography sx={{ fontWeight: "bold" }}>{row.author}</Typography>
         </TableCell>
         <TableCell align="right">
-          {row.isCompleted ? (
+          {row.completed ? (
             <CheckIcon color="success" />
           ) : (
             <CloseIcon color="warning" />
           )}
+        </TableCell>
+        <TableCell align="right">
+          <DeleteIcon />
         </TableCell>
       </TableRow>
       <TableRow>
@@ -146,7 +151,7 @@ Row.propTypes = {
   row: PropTypes.shape({
     title: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired,
-    isCompleted: PropTypes.bool.isRequired,
+    completed: PropTypes.bool.isRequired,
     details: PropTypes.arrayOf(
       PropTypes.shape({
         volumes: PropTypes.number.isRequired,
@@ -158,7 +163,9 @@ Row.propTypes = {
 };
 
 export default function MangaList() {
-  const { data, loading, error } = useFetch("/manga.json");
+  const { data, loading, error } = useFetch(
+    "http://localhost:8080/manga/manga"
+  );
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -186,6 +193,9 @@ export default function MangaList() {
         backgroundImage: "url(/assets/wallpaper-sitopersonale-manga.jpg)",
       }}
     >
+      <div className="absolute left-5">
+        <MangaListInput />
+      </div>
       <div className="w-[50%]">
         <TableContainer
           component={Paper}
@@ -211,6 +221,11 @@ export default function MangaList() {
                 <TableCell sx={{ color: "white" }} align="right">
                   <Typography variant="h6" gutterBottom component="div">
                     Completata
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ color: "white" }} align="right">
+                  <Typography variant="h6" gutterBottom component="div">
+                    Elimina
                   </Typography>
                 </TableCell>
               </TableRow>

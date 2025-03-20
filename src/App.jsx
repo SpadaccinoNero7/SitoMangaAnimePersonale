@@ -3,15 +3,17 @@ import styles from "./main.module.scss";
 
 function App() {
   return (
-    <div className={styles.body}>
-      <div className={styles.title}>
+    <div className="flex flex-col justify-around bg-black h-[100vh] w-[100vw] text-white">
+      <div className="w-auto border-white border">
         <h1>HomePage</h1>
       </div>
-      <div className={styles.animeSection}>
-        <Link to="animelist">Anime</Link>
-      </div>
-      <div className={styles.mangaSection}>
-        <Link to="mangalist">Manga</Link>
+      <div className="flex w-auto">
+        <div className="border-white border">
+          <Link to="animelist">Anime</Link>
+        </div>
+        <div className="border-white border">
+          <Link to="mangalist">Manga</Link>
+        </div>
       </div>
     </div>
   );

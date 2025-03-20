@@ -1,4 +1,6 @@
 import * as React from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./animeList.module.scss";
 import PropTypes from "prop-types";
 import CheckIcon from "@mui/icons-material/Check";
@@ -17,6 +19,8 @@ import { visuallyHidden } from "@mui/utils";
 import { Link } from "react-router-dom";
 import { useFetch } from "../customHooks/useFetch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import AnimeInput from "./AnimeInput";
+import axios from "axios";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -42,10 +46,15 @@ const headCells = [
     label: "Titolo",
   },
   {
-    id: "isCompleted",
+    id: "completed",
     boolean: true,
     disablePadding: false,
     label: "Completata",
+  },
+  {
+    id: "delete",
+    boolean: true,
+    label: "Elimina",
   },
 ];
 
@@ -99,7 +108,11 @@ export default function AnimeList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage] = React.useState(5);
 
-  const { data } = useFetch("/anime.json");
+  const { data } = useFetch("http://localhost:8080/anime/anime");
+
+  const handleDelete = (id) => {
+    axios.delete();
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -127,92 +140,101 @@ export default function AnimeList() {
   const width = window.innerWidth;
 
   return (
-    <div
-      className="h-screen bg-cover bg-right-bottom"
-      style={{
-        backgroundImage: "url(/assets/wallpaper-sitopersonale-anime.jpg)",
-      }}
-    >
-      <div className="flex h-[50%]"></div>
-      <div className="flex h-[50%] justify-center items-end">
-        <Box className="xl:w-[30%]">
-          {" "}
-          {/* sx={{ width: "30%", position: "absolute", top: "1%", right: "1%" }} */}
-          <Paper sx={{ width: "100%", mb: 2 }}>
-            <TableContainer>
-              <Table
-                sx={{ minWidth: 500 }}
-                aria-labelledby="tableTitle"
-                size={width <= 1272 ? "small" : "medium"}
-              >
-                <EnhancedTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                  rowCount={data ? data.length : 0}
-                />
-                <TableBody>
-                  {visibleRows.map((anime, index) => {
-                    const labelId = `enhanced-table-checkbox-${index}`;
-
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={anime.id}
-                      >
-                        <TableCell padding="checkbox"></TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
+    <>
+      <div
+        className="h-screen bg-cover bg-right-bottom"
+        style={{
+          backgroundImage: "url(/assets/wallpaper-sitopersonale-anime.jpg)",
+        }}
+      >
+        <div className="flex h-[50%]"></div>
+        <div className="absolute">
+          <AnimeInput />
+        </div>
+        <div className="flex h-[50%] justify-center items-end">
+          <Box className="xl:w-[30%]">
+            {" "}
+            {/* sx={{ width: "30%", position: "absolute", top: "1%", right: "1%" }} */}
+            <Paper sx={{ width: "100%", mb: 2 }}>
+              <TableContainer>
+                <Table
+                  sx={{ minWidth: 500 }}
+                  aria-labelledby="tableTitle"
+                  size={width <= 1272 ? "small" : "medium"}
+                >
+                  <EnhancedTableHead
+                    order={order}
+                    orderBy={orderBy}
+                    onRequestSort={handleRequestSort}
+                    rowCount={data ? data.length : 0}
+                  />
+                  <TableBody>
+                    {visibleRows.map((anime, index) => {
+                      const labelId = `enhanced-table-checkbox-${index}`;
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={anime.id}
                         >
-                          {anime.title}
-                        </TableCell>
-                        <TableCell align="right">
-                          {anime.isCompleted ? (
-                            <CheckIcon color="success" />
-                          ) : (
-                            <CloseIcon color="warning" />
-                          )}
-                        </TableCell>
+                          <TableCell padding="checkbox">
+                            <EditIcon />
+                          </TableCell>
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none"
+                          >
+                            {anime.title}
+                          </TableCell>
+                          <TableCell align="right">
+                            {anime.completed ? (
+                              <CheckIcon color="success" />
+                            ) : (
+                              <CloseIcon color="warning" />
+                            )}
+                          </TableCell>
+                          <TableCell align="right">
+                            <DeleteIcon />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                    {emptyRows > 0 && (
+                      <TableRow
+                        style={{
+                          height: 33 * emptyRows,
+                        }}
+                      >
+                        <TableCell colSpan={6} />
                       </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow
-                      style={{
-                        height: 33 * emptyRows,
-                      }}
-                    >
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <div className="flex justify-between items-center">
-              <Link to="/" className="ml-10">
-                <ArrowBackIcon />
-              </Link>
-              <TablePagination
-                component="div"
-                labelDisplayedRows={() => {
-                  ``;
-                }}
-                count={data ? data.length : 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPageOptions={[]}
-              />
-            </div>
-          </Paper>
-        </Box>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <div className="flex justify-between items-center">
+                <Link to="/" className="ml-10">
+                  <ArrowBackIcon />
+                </Link>
+                <TablePagination
+                  component="div"
+                  labelDisplayedRows={() => {
+                    ``;
+                  }}
+                  count={data ? data.length : 0}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPageOptions={[]}
+                />
+              </div>
+            </Paper>
+          </Box>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
