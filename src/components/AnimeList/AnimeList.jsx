@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../AnimeList/HoverTextCheckbox.css";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./animeList.module.scss";
@@ -107,8 +108,11 @@ export default function AnimeList() {
   const [orderBy, setOrderBy] = React.useState("title");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage] = React.useState(5);
+  const [editMode, setEditMode] = React.useState(false);
 
   const { data } = useFetch("http://localhost:8080/anime/anime");
+
+  /* const [editInput, setEditInput] = React.useState(anime.title); */
 
   const handleDelete = (id) => {
     axios.delete();
@@ -137,6 +141,11 @@ export default function AnimeList() {
     [order, orderBy, page, rowsPerPage, data]
   );
 
+  console.log(
+    visibleRows.map((el) => {
+      return el.title;
+    })
+  );
   const width = window.innerWidth;
 
   return (
@@ -179,7 +188,10 @@ export default function AnimeList() {
                           key={anime.id}
                         >
                           <TableCell padding="checkbox">
-                            <EditIcon />
+                            {!editMode && (
+                              <EditIcon onClick={() => setEditMode(true)} />
+                            )}
+                            {editMode && <CheckIcon />}
                           </TableCell>
                           <TableCell
                             component="th"

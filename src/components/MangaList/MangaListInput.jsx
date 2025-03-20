@@ -58,18 +58,24 @@ export default function MangaListInput() {
         onChange={(e) => setInputAuthor(e.target.value)}
         className="p-2 border rounded"
       />
-      {checkCompleted && (
-        <CheckBoxIcon
-          className="cursor-pointer ml-2"
-          onClick={handleCompleted}
-        />
-      )}
-      {!checkCompleted && (
-        <CheckBoxOutlineBlankIcon
-          className="cursor-pointer ml-2"
-          onClick={handleCompleted}
-        />
-      )}
+      <div className="tooltip">
+        {checkCompleted ? (
+          <CheckBoxIcon
+            onClick={handleCompleted}
+            className="cursor-pointer text-white"
+          />
+        ) : (
+          <CheckBoxOutlineBlankIcon
+            onClick={handleCompleted}
+            className="cursor-pointer hover:text-white"
+          />
+        )}
+        <span className="tooltip-text">
+          {checkCompleted
+            ? "Segna come non completato"
+            : "Segna come completato"}
+        </span>
+      </div>
       <AddIcon onClick={handleAdd} className="cursor-pointer ml-2" />
       {error && <p className="text-white">{error}</p>}
     </div>
