@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import styles from "./main.module.scss";
 
 function App() {
   return (
@@ -7,12 +6,16 @@ function App() {
       <div className=" border-white border self-center">
         <h1>HomePage</h1>
       </div>
-      <div className="flex w-auto justify-around">
-        <div className="border-white border">
-          <Link to="animelist">Anime</Link>
+      <div className="flex justify-around">
+        <div className="bg-cover bg-center w-full p-[10%]">
+          <Link to="animelist">
+            <img src="../assets/animeSlide.jpg"></img>
+          </Link>
         </div>
-        <div className="border-white border">
-          <Link to="mangalist">Manga</Link>
+        <div className="bg-cover bg-center w-full p-[10%]">
+          <Link to="animelist">
+            <img src="../assets/mangaSlide.jpg"></img>
+          </Link>
         </div>
       </div>
     </div>
