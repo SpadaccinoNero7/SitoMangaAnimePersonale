@@ -60,7 +60,6 @@ export default function MangaListDettagliataInput({ manga }) {
         type="number"
         min={1}
         value={inputVolumes}
-        placeholder="Aggiungi il volume..."
         onChange={(e) => setInputVolumes(e.target.value)}
         className="p-2 border rounded"
       />{" "}
@@ -69,7 +68,6 @@ export default function MangaListDettagliataInput({ manga }) {
         type="number"
         min={0}
         value={inputPrice}
-        placeholder="Aggiungi il prezzo..."
         onChange={(e) => setInputPrice(e.target.value)}
         className="p-2 border rounded"
       />

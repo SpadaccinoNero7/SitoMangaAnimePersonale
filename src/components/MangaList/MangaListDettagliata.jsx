@@ -205,11 +205,10 @@ export default function MangaListDettagliata() {
   const [rowsPerPage] = React.useState(5);
 
   const { data } = useFetch("http://localhost:8080/manga/manga");
-  console.log(data);
   const mangaId = data ? Number(params.mangaId) : null;
 
   const manga = data ? data.find(({ id }) => id === mangaId) : null;
-  const mangaDetails = manga ? manga.details : [];
+  const mangaDetails = manga ? manga.detailsMangas : [];
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
