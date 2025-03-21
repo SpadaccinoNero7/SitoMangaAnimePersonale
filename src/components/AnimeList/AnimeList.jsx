@@ -115,7 +115,7 @@ export default function AnimeList() {
   /* const [editInput, setEditInput] = React.useState(anime.title); */
 
   const handleDelete = (id) => {
-    axios.delete();
+    axios.delete(`http://localhost:8080/anime/anime/${id}`);
   };
 
   const handleRequestSort = (event, property) => {
@@ -209,7 +209,10 @@ export default function AnimeList() {
                             )}
                           </TableCell>
                           <TableCell align="right">
-                            <DeleteIcon />
+                            <DeleteIcon
+                              onClick={() => handleDelete(anime.id)}
+                              style={{ cursor: "pointer" }}
+                            />
                           </TableCell>
                         </TableRow>
                       );
