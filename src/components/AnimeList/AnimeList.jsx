@@ -22,6 +22,7 @@ import { useFetch } from "../customHooks/useFetch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AnimeInput from "./AnimeInput";
 import axios from "axios";
+import AnimePut from "./AnimePut";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -189,9 +190,15 @@ export default function AnimeList() {
                         >
                           <TableCell padding="checkbox">
                             {!editMode && (
-                              <EditIcon onClick={() => setEditMode(true)} />
+                              <EditIcon
+                                onClick={() => setEditMode(!editMode)}
+                              />
                             )}
-                            {editMode && <CheckIcon />}
+                            {editMode && (
+                              <CheckIcon
+                                onClick={() => setEditMode(!editMode)}
+                              />
+                            )}
                           </TableCell>
                           <TableCell
                             component="th"
@@ -199,7 +206,11 @@ export default function AnimeList() {
                             scope="row"
                             padding="none"
                           >
-                            {anime.title}
+                            {editMode ? (
+                              <AnimePut anime={anime} />
+                            ) : (
+                              `${anime.title}`
+                            )}
                           </TableCell>
                           <TableCell align="right">
                             {anime.completed ? (
