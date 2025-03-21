@@ -168,6 +168,7 @@ export default function MangaList() {
   );
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  console.log(data);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

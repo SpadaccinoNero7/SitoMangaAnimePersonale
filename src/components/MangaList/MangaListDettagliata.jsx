@@ -23,6 +23,7 @@ import { Link, useParams } from "react-router-dom";
 import { useFetch } from "../customHooks/useFetch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import styles from "./mangaList.module.scss";
+import MangaListDettagliataInput from "./MangaListDettagliataInput";
 
 /* function createData(id, volumes, date, price) {
   return {
@@ -127,7 +128,7 @@ function EnhancedTableToolbar(props) {
 
   /* const { numSelected, handleRemove } = props; */
 
-  const { data } = useFetch("/manga.json");
+  const { data } = useFetch("http://localhost:8080/manga/manga");
   const mangaId = data ? Number(params.mangaId) : null;
 
   const manga = data ? data.find(({ id }) => id === mangaId) : [];
@@ -203,7 +204,8 @@ export default function MangaListDettagliata() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage] = React.useState(5);
 
-  const { data } = useFetch("/manga.json");
+  const { data } = useFetch("http://localhost:8080/manga/manga");
+  console.log(data);
   const mangaId = data ? Number(params.mangaId) : null;
 
   const manga = data ? data.find(({ id }) => id === mangaId) : null;
@@ -270,16 +272,24 @@ export default function MangaListDettagliata() {
   );
 
   return (
-    <div className={styles.body}>
-      <Box sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }}>
-        <Paper sx={{ width: "100%", mb: 2 }}>
+    <div
+      className="h-screen bg-cover bg-center flex items-center justify-between"
+      style={{
+        backgroundImage: "url(/assets/wallpaper-sitopersonale-manga.jpg)",
+      }}
+    >
+      <div>
+        <MangaListDettagliataInput manga={manga} />
+      </div>
+      <Box sx={{ width: "50%" }}>
+        <Paper sx={{ width: "50%" }}>
           <EnhancedTableToolbar
           /* numSelected={selected.length} */
           /* handleRemove={handleRemove} */
           />
           <TableContainer>
             <Table
-              sx={{ minWidth: 750 }}
+              sx={{ minWidth: 400 }}
               aria-labelledby="tableTitle"
               size={"medium"}
             >
@@ -289,7 +299,7 @@ export default function MangaListDettagliata() {
                 orderBy={orderBy}
                 /* onSelectAllClick={handleSelectAllClick} */
                 onRequestSort={handleRequestSort}
-                rowCount={mangaDetails.length}
+                rowCount={mangaDetails ? mangaDetails.length : 0}
               />
               <TableBody>
                 {visibleRows.map((manga, index) => {
@@ -341,7 +351,7 @@ export default function MangaListDettagliata() {
               labelDisplayedRows={() => {
                 ``;
               }}
-              count={mangaDetails.length}
+              count={mangaDetails ? mangaDetails.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
