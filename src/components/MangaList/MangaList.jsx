@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./mangaList.module.scss";
 import DeleteIcon from "@mui/icons-material/Delete";
 import * as React from "react";
@@ -28,6 +29,7 @@ import { useFetch } from "../customHooks/useFetch";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MangaListInput from "./MangaListInput";
+import { getMangaAsync } from "./mangaSlice";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -163,12 +165,14 @@ Row.propTypes = {
 };
 
 export default function MangaList() {
-  const { data, loading, error } = useFetch(
-    "http://localhost:8080/manga/manga"
-  );
+  const { data, loading, error } = useSelector((state) => state.manga);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  console.log(data);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(getMangaAsync());
+  }, [dispatch]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -239,7 +243,7 @@ export default function MangaList() {
                   )
                 : data
               ).map((row) => (
-                <Row key={row.title} row={row} />
+                <Row key={row.id} row={row} />
               ))}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>

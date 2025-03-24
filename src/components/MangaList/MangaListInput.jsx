@@ -5,6 +5,8 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
+import { useDispatch } from "react-redux";
+import { addMangaAsync } from "./mangaSlice";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");
@@ -12,6 +14,7 @@ export default function MangaListInput() {
   const [error, setError] = useState(null);
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(false);
+  const dispatch = useDispatch();
 
   const handleCompleted = () => {
     setCheckCompleted(!checkCompleted);
@@ -38,23 +41,17 @@ export default function MangaListInput() {
       return;
     }
 
-    axios
-      .post("http://localhost:8080/manga/manga", {
-        id: 0,
-        title: inputTitle,
-        author: inputAuthor,
+    setError(null);
+    dispatch(
+      addMangaAsync({
+        title: inputTitle.trim(),
+        author: inputAuthor.trim(),
         completed: checkCompleted,
       })
-      .then((res) => {
-        setInputTitle("");
-        setInputAuthor("");
-        setCheckCompleted(false);
-        setError("Aggiunto correttamente!");
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Errore durante l'aggiunta dell'anime.");
-      });
+    );
+    setInputTitle("");
+    setInputAuthor("");
+    setCheckCompleted(false);
   };
 
   return (
