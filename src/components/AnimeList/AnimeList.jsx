@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
 import "../AnimeList/HoverTextCheckbox.css";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,11 +19,10 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
 import { Link } from "react-router-dom";
-import { useFetch } from "../customHooks/useFetch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AnimeInput from "./AnimeInput";
-import axios from "axios";
 import AnimePut from "./AnimePut";
+import { deleteAnimeAsync, getAnimeAsync } from "./animeSlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -110,14 +110,15 @@ export default function AnimeList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage] = React.useState(5);
   const [editMode, setEditMode] = React.useState(false);
+  const dispatch = useDispatch();
 
-  const { data } = useFetch("http://localhost:8080/anime/anime");
+  // Usa useSelector per accedere ai dati dallo store Redux
+  const { data, loading, error } = useSelector((state) => state.anime);
 
-  /* const [editInput, setEditInput] = React.useState(anime.title); */
-
-  const handleDelete = (id) => {
-    axios.delete(`http://localhost:8080/anime/anime/${id}`);
-  };
+  // Chiama getAnimeAsync quando il componente viene montato
+  useEffect(() => {
+    dispatch(getAnimeAsync());
+  }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -142,11 +143,14 @@ export default function AnimeList() {
     [order, orderBy, page, rowsPerPage, data]
   );
 
-  /*   console.log(
-    visibleRows.map((el) => {
-      return el.title;
-    })
-  ); */
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
   const width = window.innerWidth;
 
   return (
@@ -221,7 +225,9 @@ export default function AnimeList() {
                           </TableCell>
                           <TableCell align="right">
                             <DeleteIcon
-                              onClick={() => handleDelete(anime.id)}
+                              onClick={() =>
+                                dispatch(deleteAnimeAsync(anime.id))
+                              }
                               style={{ cursor: "pointer" }}
                             />
                           </TableCell>

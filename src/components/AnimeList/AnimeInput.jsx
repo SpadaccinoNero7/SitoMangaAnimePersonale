@@ -5,12 +5,15 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BlockIcon from "@mui/icons-material/Block";
 import "./HoverTextCheckbox.css";
+import { useDispatch } from "react-redux";
+import { addAnimeAsync } from "./animeSlice";
 
 export default function AnimeInput() {
   const [input, setInput] = useState("");
   const [error, setError] = useState(null);
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(false);
+  const dispatch = useDispatch();
 
   const handleCompleted = () => {
     setCheckCompleted(!checkCompleted);
@@ -33,22 +36,15 @@ export default function AnimeInput() {
       setError("Il titolo non può essere vuoto.");
       return;
     }
-
-    axios
-      .post("http://localhost:8080/anime/anime", {
-        id: 0,
-        title: input,
-        completed: checkCompleted,
+    setError(null); // Resetta eventuali errori
+    dispatch(
+      addAnimeAsync({
+        title: input.trim(), // Passa il titolo
+        completed: checkCompleted, // Passa lo stato "completed"
       })
-      .then((res) => {
-        setInput("");
-        setCheckCompleted(false);
-        setError(null);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Errore durante l'aggiunta dell'anime.");
-      });
+    );
+    setInput(""); // Resetta il campo di input
+    setCheckCompleted(false); // Resetta il checkbox
   };
 
   return (
