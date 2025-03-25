@@ -1,6 +1,10 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 function App() {
+  const anime = useSelector((state) => state.anime.count);
+  const manga = useSelector((state) => state.manga.count);
+
   return (
     <div className="flex flex-col justify-around bg-black h-[100vh] w-[100vw] text-white">
       <div className=" border-white border self-center">
@@ -20,6 +24,8 @@ function App() {
             <Link to="animelist">
               <div className="bg-green-500 text-white p-2 rounded">
                 Vai alla sezione Anime!
+                <br />
+                Anime in lista: {anime}
               </div>
             </Link>
           </div>
@@ -33,10 +39,12 @@ function App() {
               ></img>
             </Link>
           </div>
-          <div className="ease-in duration-[.5s] absolute top-[50%] right-[50%] transform translate-x-[50%] translate-y-[50%] opacity-0 group-hover:opacity-100">
+          <div className="ease-in duration-[.5s] absolute top-[50%] right-[50%] transform translate-x-[30%] translate-y-[-50%] opacity-0 group-hover:opacity-100">
             <Link to="mangalist">
               <div className="bg-green-500 text-white p-2 rounded">
                 Vai alla sezione Manga!
+                <br />
+                Manga in lista: {manga}
               </div>
             </Link>
           </div>

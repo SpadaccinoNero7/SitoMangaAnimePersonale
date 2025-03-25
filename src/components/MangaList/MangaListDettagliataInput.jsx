@@ -12,8 +12,6 @@ export default function MangaListDettagliataInput({ manga }) {
   const [error, setError] = useState(null);
   const [isValid, setIsValid] = useState(false);
 
-  console.log(manga);
-
   const handleValidation = () => {
     if (inputVolumes && inputPrice) {
       setIsValid(true);

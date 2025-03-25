@@ -35,6 +35,7 @@ const animeSlice = createSlice({
     data: [],
     loading: false,
     error: null,
+    count: 0,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -58,6 +59,7 @@ const animeSlice = createSlice({
       })
       .addCase(deleteAnimeAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.count--;
         state.data = state.data.filter((anime) => anime.id !== action.payload);
         console.log("cancellazione effettuata correttamente");
       })
@@ -72,6 +74,7 @@ const animeSlice = createSlice({
       })
       .addCase(addAnimeAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.count++;
         state.data.push(action.payload);
         console.log("aggiunta effettuata correttamente");
       })

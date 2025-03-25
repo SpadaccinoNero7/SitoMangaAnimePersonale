@@ -36,6 +36,7 @@ const mangaSlice = createSlice({
     data: [],
     loading: false,
     error: null,
+    count: 0,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -59,6 +60,7 @@ const mangaSlice = createSlice({
       })
       .addCase(deleteMangaAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.count--;
         state.data = state.data.filter((manga) => manga.id !== action.payload);
         console.log("cancellazione effettuata correttamente");
       })
@@ -73,6 +75,7 @@ const mangaSlice = createSlice({
       })
       .addCase(addMangaAsync.fulfilled, (state, action) => {
         state.loading = false;
+        state.count++;
         state.data.push(action.payload);
         console.log("aggiunta effettuata correttamente");
       })
