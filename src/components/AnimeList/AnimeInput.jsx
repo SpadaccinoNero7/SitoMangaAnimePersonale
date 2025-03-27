@@ -1,5 +1,5 @@
+import TextField from "@mui/material/TextField";
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
@@ -23,7 +23,7 @@ export default function AnimeInput() {
     if (input) {
       setIsValid(true);
     } else {
-      return;
+      setIsValid(false);
     }
   };
 
@@ -36,25 +36,31 @@ export default function AnimeInput() {
       setError("Il titolo non può essere vuoto.");
       return;
     }
-    setError(null); // Resetta eventuali errori
+    setError(null);
     dispatch(
       addAnimeAsync({
-        title: input.trim(), // Passa il titolo
-        completed: checkCompleted, // Passa lo stato "completed"
+        title: input.trim(),
+        completed: checkCompleted,
       })
     );
-    setInput(""); // Resetta il campo di input
-    setCheckCompleted(false); // Resetta il checkbox
+    setInput("");
+    setCheckCompleted(false);
   };
 
   return (
     <div className="bg-red-400 p-4 flex items-center justify-around">
-      <input
+      {/* <input
         type="text"
         value={input}
         placeholder="Aggiungi il titolo..."
         onChange={(e) => setInput(e.target.value)}
         className="p-2 border rounded"
+      /> */}
+      <TextField
+        label="Titolo"
+        variant="outlined"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       />
       <div className="tooltip">
         {checkCompleted ? (

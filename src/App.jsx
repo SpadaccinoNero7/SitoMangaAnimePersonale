@@ -1,3 +1,5 @@
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -47,6 +49,43 @@ function App() {
                 Manga in lista: {manga}
               </div>
             </Link>
+          </div>
+        </div>
+        <div className="bg-cover bg-center w-full m-[5%] relative group">
+          <div>
+            <Tooltip
+              title={`Manga in lista: ${manga}`}
+              slotProps={{
+                tooltip: {
+                  sx: {
+                    backgroundColor: "green",
+                    color: "white",
+                    fontSize: "1rem",
+                  },
+                },
+              }}
+              placement="top"
+            >
+              <Tooltip
+                title="Vai alla sezione Manga!"
+                followCursor
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      backgroundColor: "green",
+                      color: "white",
+                    },
+                  },
+                }}
+              >
+                <Box>
+                  <img
+                    src="../assets/mangaSlide.jpg"
+                    className="opacity-[1] block ease-out duration-[.3s] hover:opacity-[.3]"
+                  ></img>
+                </Box>
+              </Tooltip>
+            </Tooltip>
           </div>
         </div>
       </div>

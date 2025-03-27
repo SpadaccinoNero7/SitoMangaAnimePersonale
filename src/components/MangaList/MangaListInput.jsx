@@ -7,6 +7,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addMangaAsync } from "./mangaSlice";
+import TextField from "@mui/material/TextField";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");
@@ -24,7 +25,7 @@ export default function MangaListInput() {
     if (inputTitle && inputAuthor) {
       setIsValid(true);
     } else {
-      return;
+      setIsValid(false);
     }
   };
 
@@ -56,20 +57,32 @@ export default function MangaListInput() {
 
   return (
     <div className="bg-red-400 w-fit p-4">
-      <input
+      {/*       <input
         type="text"
         value={inputTitle}
         placeholder="Aggiungi il titolo..."
         onChange={(e) => setInputTitle(e.target.value)}
         className="p-2 border rounded"
+      /> */}
+      <TextField
+        label="Titolo"
+        variant="outlined"
+        value={inputTitle}
+        onChange={(e) => setInputTitle(e.target.value)}
       />
-      <input
+      <TextField
+        label="Autore"
+        variant="outlined"
+        value={inputAuthor}
+        onChange={(e) => setInputAuthor(e.target.value)}
+      />
+      {/*       <input
         type="text"
         value={inputAuthor}
         placeholder="Aggiungi l'autore..."
         onChange={(e) => setInputAuthor(e.target.value)}
         className="p-2 border rounded"
-      />
+      /> */}
       <div className="tooltip">
         {checkCompleted ? (
           <CheckBoxIcon

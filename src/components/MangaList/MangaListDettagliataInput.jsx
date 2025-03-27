@@ -21,7 +21,7 @@ export default function MangaListDettagliataInput({ manga }) {
     if (inputVolumes && inputPrice) {
       setIsValid(true);
     } else {
-      return;
+      setIsValid(false);
     }
   };
 
