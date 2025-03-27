@@ -143,12 +143,12 @@ export default function AnimeList() {
     [order, orderBy, page, rowsPerPage, data]
   );
 
-  if (loading) {
-    return <p>Loading...</p>;
+  {
+    loading && <p>Loading...</p>;
   }
 
-  if (error) {
-    return <p>Error: {error}</p>;
+  {
+    error && <p>Error: {error}</p>;
   }
 
   const width = window.innerWidth;

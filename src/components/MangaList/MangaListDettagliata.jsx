@@ -24,6 +24,8 @@ import { useFetch } from "../customHooks/useFetch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import styles from "./mangaList.module.scss";
 import MangaListDettagliataInput from "./MangaListDettagliataInput";
+import { useDispatch, useSelector } from "react-redux";
+import { getMangaAsync } from "./mangaSlice";
 
 /* function createData(id, volumes, date, price) {
   return {
@@ -125,10 +127,13 @@ EnhancedTableHead.propTypes = {
 
 function EnhancedTableToolbar(props) {
   const params = useParams();
+  const dispatch = useDispatch();
 
-  /* const { numSelected, handleRemove } = props; */
+  const { data } = useSelector((state) => state.manga);
 
-  const { data } = useFetch("http://localhost:8080/manga/manga");
+  React.useEffect(() => {
+    dispatch(getMangaAsync());
+  }, [dispatch]);
   const mangaId = data ? Number(params.mangaId) : null;
 
   const manga = data ? data.find(({ id }) => id === mangaId) : [];
@@ -140,27 +145,8 @@ function EnhancedTableToolbar(props) {
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
         },
-        /* numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }, */
       ]}
     >
-      {/* {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected > 1
-            ? `${numSelected} selezionati`
-            : `${numSelected} selezionato`}{" "}
-        </Typography>
-      ) */}
       <Typography
         sx={{ flex: "1 1 100%" }}
         variant="h6"
@@ -170,14 +156,6 @@ function EnhancedTableToolbar(props) {
       >
         {manga ? <strong>{manga.title}</strong> : "Loading..."}
       </Typography>
-
-      {/* {numSelected > 0 ? (
-        <Tooltip title="Elimina">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : ( */}
       <Tooltip title="Filtra">
         <IconButton>
           <FilterListIcon />
@@ -189,7 +167,6 @@ function EnhancedTableToolbar(props) {
 }
 
 EnhancedTableToolbar.propTypes = {
-  /* numSelected: PropTypes.number.isRequired, */
   handleRemove: PropTypes.func.isRequired,
 };
 
@@ -199,14 +176,24 @@ export default function MangaListDettagliata() {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("volumes");
 
-  /* const [selected, setSelected] = React.useState([]); */
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage] = React.useState(5);
 
-  const { data } = useFetch("http://localhost:8080/manga/manga");
+  /*   const { data } = useFetch("http://localhost:8080/manga/manga");
   const mangaId = data ? Number(params.mangaId) : null;
+  
+  const manga = data ? data.find(({ id }) => id === mangaId) : null;
+  const mangaDetails = manga ? manga.detailsMangas : []; */
 
+  const dispatch = useDispatch();
+
+  const { data } = useSelector((state) => state.manga);
+
+  React.useEffect(() => {
+    dispatch(getMangaAsync());
+  }, [dispatch]);
+
+  const mangaId = data ? Number(params.mangaId) : null;
   const manga = data ? data.find(({ id }) => id === mangaId) : null;
   const mangaDetails = manga ? manga.detailsMangas : [];
 
@@ -216,45 +203,10 @@ export default function MangaListDettagliata() {
     setOrderBy(property);
   };
 
-  /*   const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = mangaDetails.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  }; */
-
-  /*   const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  }; */
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  /*   const handleRemove = () => {
-    const newMangaList = mangaList.filter(
-      (manga) => !selected.includes(manga.id)
-    );
-  }; */
-
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 && mangaDetails
       ? Math.max(0, (1 + page) * rowsPerPage - mangaDetails.length)
@@ -282,10 +234,7 @@ export default function MangaListDettagliata() {
       </div>
       <Box sx={{ width: "50%" }}>
         <Paper sx={{ width: "50%" }}>
-          <EnhancedTableToolbar
-          /* numSelected={selected.length} */
-          /* handleRemove={handleRemove} */
-          />
+          <EnhancedTableToolbar />
           <TableContainer>
             <Table
               sx={{ minWidth: 400 }}
@@ -293,16 +242,13 @@ export default function MangaListDettagliata() {
               size={"medium"}
             >
               <EnhancedTableHead
-                /* numSelected={selected.length} */
                 order={order}
                 orderBy={orderBy}
-                /* onSelectAllClick={handleSelectAllClick} */
                 onRequestSort={handleRequestSort}
                 rowCount={mangaDetails ? mangaDetails.length : 0}
               />
               <TableBody>
                 {visibleRows.map((manga, index) => {
-                  /* const isItemSelected = selected.includes(manga.id); */
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -310,10 +256,8 @@ export default function MangaListDettagliata() {
                       hover
                       onClick={(event) => handleClick(event, manga.id)}
                       role="checkbox"
-                      /* aria-checked={isItemSelected} */
                       tabIndex={-1}
                       key={manga.volumes}
-                      /* selected={isItemSelected} */
                     >
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell

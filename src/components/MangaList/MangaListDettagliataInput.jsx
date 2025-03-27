@@ -1,16 +1,21 @@
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
+import { useDispatch } from "react-redux";
+import { addMangaDettaglioAsync } from "./mangaDettaglioSlice";
 
 export default function MangaListDettagliataInput({ manga }) {
-  const [inputVolumes, setInputVolumes] = useState(0);
+  const [inputVolumes, setInputVolumes] = useState(1);
   const [inputPrice, setInputPrice] = useState(0);
+  const [inputDate, setInputDate] = useState("");
+  const today = useState(new Date().toISOString().split("T")[0]);
+  const [checkDate, setCheckDate] = useState(false);
   const [error, setError] = useState(null);
   const [isValid, setIsValid] = useState(false);
+  const dispatch = useDispatch();
 
   const handleValidation = () => {
     if (inputVolumes && inputPrice) {
@@ -25,30 +30,26 @@ export default function MangaListDettagliataInput({ manga }) {
   }, [inputVolumes, inputPrice]);
 
   const handleAdd = () => {
-    if (!inputVolumes.trim()) {
-      setError("Il titolo non può essere vuoto.");
+    if (!inputVolumes) {
+      setError("Numero del volume necessario!");
       return;
-    } else if (!inputPrice.trim()) {
-      setError("L'autore deve essere aggiunto");
+    } else if (!inputPrice) {
+      setError("Prezzo necessario!");
       return;
     }
-
-    axios
-      .post(`http://localhost:8080/detailsManga/manga/${manga.id}/details`, {
-        id: 0,
-        volumes: inputVolumes,
-        date: "2025-03-20",
-        price: inputPrice,
+    setError(null);
+    dispatch(
+      addMangaDettaglioAsync({
+        id: manga.id,
+        volumes: Number(inputVolumes),
+        date: inputDate,
+        price: Number(inputPrice),
       })
-      .then((res) => {
-        setInputVolumes("");
-        setInputPrice("");
-        setError("Aggiunto correttamente!");
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Errore durante l'aggiunta dei dettagli.");
-      });
+    );
+    setError("Aggiunta effettuata");
+    setInputDate("");
+    setInputPrice(0);
+    setInputVolumes(1);
   };
 
   return (
@@ -61,6 +62,27 @@ export default function MangaListDettagliataInput({ manga }) {
         onChange={(e) => setInputVolumes(e.target.value)}
         className="p-2 border rounded"
       />{" "}
+      <p>Data</p>
+      <input
+        type="date"
+        value={!checkDate ? inputDate : today}
+        disabled={checkDate}
+        data-date-format={"yyyy-MM-dd"}
+        onChange={(e) => setInputDate(e.target.value)}
+        className="p-2 border rounded"
+      />{" "}
+      <div className="tooltip">
+        {!checkDate ? (
+          <CheckBoxOutlineBlankIcon onClick={() => setCheckDate(true)} />
+        ) : (
+          <CheckBoxIcon onClick={() => setCheckDate(false)} />
+        )}
+        <span className="tooltip-text">
+          {checkDate
+            ? "Clicca per selezionare una data personalizzata"
+            : "Clicca per selezionare la data odierna"}
+        </span>
+      </div>
       <p>Prezzo</p>
       <input
         type="number"
