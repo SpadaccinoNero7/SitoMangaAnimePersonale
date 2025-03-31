@@ -1,8 +1,8 @@
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import axios from "axios";
 import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
+import { TextField } from "@mui/material";
 
 export default function AnimePut({ anime }) {
   const [value, setValue] = useState(anime.title || "");
@@ -27,8 +27,20 @@ export default function AnimePut({ anime }) {
 
   return (
     <>
-      <input
+      {/* <input
         type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      /> */}
+      <TextField
+        label="Modifica titolo in corso"
+        /*         sx={{
+          backgroundColor: "green",
+          color: "white",
+          fontSize: "1rem",
+        }} */
+        variant="standard"
+        size="small"
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />

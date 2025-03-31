@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
@@ -10,8 +14,8 @@ import { addMangaDettaglioAsync } from "./mangaDettaglioSlice";
 export default function MangaListDettagliataInput({ manga }) {
   const [inputVolumes, setInputVolumes] = useState(1);
   const [inputPrice, setInputPrice] = useState(0);
-  const [inputDate, setInputDate] = useState("");
-  const today = useState(new Date().toISOString().split("T")[0]);
+  const [inputDate, setInputDate] = useState(dayjs());
+  const today = dayjs();
   const [checkDate, setCheckDate] = useState(false);
   const [error, setError] = useState(null);
   const [isValid, setIsValid] = useState(false);
@@ -42,12 +46,12 @@ export default function MangaListDettagliataInput({ manga }) {
       addMangaDettaglioAsync({
         id: manga.id,
         volumes: Number(inputVolumes),
-        date: inputDate,
+        date: inputDate.format("YYYY-MM-DD"),
         price: Number(inputPrice),
       })
     );
     setError("Aggiunta effettuata");
-    setInputDate("");
+    setInputDate(dayjs());
     setInputPrice(0);
     setInputVolumes(1);
   };
@@ -61,16 +65,16 @@ export default function MangaListDettagliataInput({ manga }) {
         value={inputVolumes}
         onChange={(e) => setInputVolumes(e.target.value)}
         className="p-2 border rounded"
-      />{" "}
-      <p>Data</p>
-      <input
-        type="date"
-        value={!checkDate ? inputDate : today}
-        disabled={checkDate}
-        data-date-format={"yyyy-MM-dd"}
-        onChange={(e) => setInputDate(e.target.value)}
-        className="p-2 border rounded"
-      />{" "}
+      />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker
+          label="Date Picker"
+          format="YYYY/M/D"
+          value={checkDate ? today : inputDate}
+          disabled={checkDate}
+          onChange={(newValue) => setInputDate(newValue)}
+        />
+      </LocalizationProvider>
       <div className="tooltip">
         {!checkDate ? (
           <CheckBoxOutlineBlankIcon onClick={() => setCheckDate(true)} />

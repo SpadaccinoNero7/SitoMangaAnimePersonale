@@ -1,6 +1,4 @@
-import * as React from "react";
 import PropTypes from "prop-types";
-import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,19 +11,16 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { Link, useParams } from "react-router-dom";
-import { useFetch } from "../customHooks/useFetch";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import styles from "./mangaList.module.scss";
 import MangaListDettagliataInput from "./MangaListDettagliataInput";
 import { useDispatch, useSelector } from "react-redux";
 import { getMangaAsync } from "./mangaSlice";
+import { useEffect, useMemo, useState } from "react";
 
 /* function createData(id, volumes, date, price) {
   return {
@@ -131,7 +126,7 @@ function EnhancedTableToolbar(props) {
 
   const { data } = useSelector((state) => state.manga);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getMangaAsync());
   }, [dispatch]);
   const mangaId = data ? Number(params.mangaId) : null;
@@ -173,11 +168,11 @@ EnhancedTableToolbar.propTypes = {
 export default function MangaListDettagliata() {
   const params = useParams();
 
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("volumes");
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("volumes");
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage] = useState(5);
 
   /*   const { data } = useFetch("http://localhost:8080/manga/manga");
   const mangaId = data ? Number(params.mangaId) : null;
@@ -189,7 +184,7 @@ export default function MangaListDettagliata() {
 
   const { data } = useSelector((state) => state.manga);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getMangaAsync());
   }, [dispatch]);
 
@@ -212,7 +207,7 @@ export default function MangaListDettagliata() {
       ? Math.max(0, (1 + page) * rowsPerPage - mangaDetails.length)
       : 0;
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
       mangaDetails
         ? [...mangaDetails]

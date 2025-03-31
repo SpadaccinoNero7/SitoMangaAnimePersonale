@@ -1,7 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./mangaList.module.scss";
 import DeleteIcon from "@mui/icons-material/Delete";
-import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
@@ -25,11 +23,13 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { useFetch } from "../customHooks/useFetch";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MangaListInput from "./MangaListInput";
 import { getMangaAsync } from "./mangaSlice";
+import Loading from "../../Loading";
+import Error from "../../Error";
+import { useEffect, useState } from "react";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -101,10 +101,10 @@ TablePaginationActions.propTypes = {
 
 function Row(props) {
   const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <React.Fragment>
+    <>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
@@ -146,7 +146,7 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </>
   );
 }
 Row.propTypes = {
@@ -166,16 +166,23 @@ Row.propTypes = {
 
 export default function MangaList() {
   const { data, loading, error } = useSelector((state) => state.manga);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getMangaAsync());
   }, [dispatch]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  /*   if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>; */
+  {
+    loading && <Loading />;
+  }
+
+  {
+    error && <Error error={error} />;
+  }
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;

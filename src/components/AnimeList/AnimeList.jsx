@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import "../AnimeList/HoverTextCheckbox.css";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import styles from "./animeList.module.scss";
 import PropTypes from "prop-types";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -23,6 +22,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AnimeInput from "./AnimeInput";
 import AnimePut from "./AnimePut";
 import { deleteAnimeAsync, getAnimeAsync } from "./animeSlice";
+import Loading from "../../Loading";
+import Error from "../../Error";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -109,16 +110,22 @@ export default function AnimeList() {
   const [orderBy, setOrderBy] = React.useState("title");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage] = React.useState(5);
-  const [editMode, setEditMode] = React.useState(false);
+  const [editModes, setEditModes] = React.useState({}); // Stato per tracciare editMode per ogni elemento
   const dispatch = useDispatch();
 
-  // Usa useSelector per accedere ai dati dallo store Redux
   const { data, loading, error } = useSelector((state) => state.anime);
 
-  // Chiama getAnimeAsync quando il componente viene montato
   useEffect(() => {
     dispatch(getAnimeAsync());
   }, [dispatch]);
+
+  {
+    loading && <Loading />;
+  }
+
+  {
+    error & <Error error={error} />;
+  }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -128,6 +135,13 @@ export default function AnimeList() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const toggleEditMode = (id) => {
+    setEditModes((prev) => ({
+      ...prev,
+      [id]: !prev[id], // Inverti il valore di editMode per l'elemento con l'ID specificato
+    }));
   };
 
   const emptyRows =
@@ -143,16 +157,6 @@ export default function AnimeList() {
     [order, orderBy, page, rowsPerPage, data]
   );
 
-  {
-    loading && <p>Loading...</p>;
-  }
-
-  {
-    error && <p>Error: {error}</p>;
-  }
-
-  const width = window.innerWidth;
-
   return (
     <>
       <div
@@ -167,14 +171,12 @@ export default function AnimeList() {
         </div>
         <div className="flex h-[50%] justify-center items-end">
           <Box className="xl:w-[30%]">
-            {" "}
-            {/* sx={{ width: "30%", position: "absolute", top: "1%", right: "1%" }} */}
             <Paper sx={{ width: "100%", mb: 2 }}>
               <TableContainer>
                 <Table
                   sx={{ minWidth: 500 }}
                   aria-labelledby="tableTitle"
-                  size={width <= 1272 ? "small" : "medium"}
+                  size={window.innerWidth <= 1272 ? "small" : "medium"}
                 >
                   <EnhancedTableHead
                     order={order}
@@ -185,6 +187,7 @@ export default function AnimeList() {
                   <TableBody>
                     {visibleRows.map((anime, index) => {
                       const labelId = `enhanced-table-checkbox-${index}`;
+                      const isEditMode = editModes[anime.id] || false; // Ottieni lo stato di editMode per l'elemento
                       return (
                         <TableRow
                           hover
@@ -193,14 +196,14 @@ export default function AnimeList() {
                           key={anime.id}
                         >
                           <TableCell padding="checkbox">
-                            {!editMode && (
+                            {!isEditMode && (
                               <EditIcon
-                                onClick={() => setEditMode(!editMode)}
+                                onClick={() => toggleEditMode(anime.id)}
                               />
                             )}
-                            {editMode && (
+                            {isEditMode && (
                               <CheckIcon
-                                onClick={() => setEditMode(!editMode)}
+                                onClick={() => toggleEditMode(anime.id)}
                               />
                             )}
                           </TableCell>
@@ -210,7 +213,7 @@ export default function AnimeList() {
                             scope="row"
                             padding="none"
                           >
-                            {editMode ? (
+                            {isEditMode ? (
                               <AnimePut anime={anime} />
                             ) : (
                               `${anime.title}`
