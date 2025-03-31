@@ -4,8 +4,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
@@ -15,8 +13,6 @@ export default function MangaListDettagliataInput({ manga }) {
   const [inputVolumes, setInputVolumes] = useState(1);
   const [inputPrice, setInputPrice] = useState(0);
   const [inputDate, setInputDate] = useState(dayjs());
-  const today = dayjs();
-  const [checkDate, setCheckDate] = useState(false);
   const [error, setError] = useState(null);
   const [isValid, setIsValid] = useState(false);
   const dispatch = useDispatch();
@@ -66,27 +62,16 @@ export default function MangaListDettagliataInput({ manga }) {
         onChange={(e) => setInputVolumes(e.target.value)}
         className="p-2 border rounded"
       />
+      <br />
+      <br />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
-          label="Date Picker"
+          label="Scegli la data"
           format="YYYY/M/D"
-          value={checkDate ? today : inputDate}
-          disabled={checkDate}
+          value={inputDate}
           onChange={(newValue) => setInputDate(newValue)}
         />
       </LocalizationProvider>
-      <div className="tooltip">
-        {!checkDate ? (
-          <CheckBoxOutlineBlankIcon onClick={() => setCheckDate(true)} />
-        ) : (
-          <CheckBoxIcon onClick={() => setCheckDate(false)} />
-        )}
-        <span className="tooltip-text">
-          {checkDate
-            ? "Clicca per selezionare una data personalizzata"
-            : "Clicca per selezionare la data odierna"}
-        </span>
-      </div>
       <p>Prezzo</p>
       <input
         type="number"

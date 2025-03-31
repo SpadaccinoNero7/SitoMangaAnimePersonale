@@ -1,5 +1,4 @@
 import AddIcon from "@mui/icons-material/Add";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
@@ -8,6 +7,8 @@ import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addMangaAsync } from "./mangaSlice";
 import TextField from "@mui/material/TextField";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");
@@ -15,6 +16,7 @@ export default function MangaListInput() {
   const [error, setError] = useState(null);
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(false);
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
   const handleCompleted = () => {
@@ -53,6 +55,15 @@ export default function MangaListInput() {
     setInputTitle("");
     setInputAuthor("");
     setCheckCompleted(false);
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -67,13 +78,18 @@ export default function MangaListInput() {
       <TextField
         label="Titolo"
         variant="outlined"
-        value={inputTitle}
+        placeholder="Inserisci il titolo"
         onChange={(e) => setInputTitle(e.target.value)}
+        value={inputTitle}
+        margin="dense"
       />
+      <br />
       <TextField
         label="Autore"
         variant="outlined"
+        placeholder="Inserisci l'autore"
         value={inputAuthor}
+        margin="dense"
         onChange={(e) => setInputAuthor(e.target.value)}
       />
       {/*       <input
@@ -114,6 +130,16 @@ export default function MangaListInput() {
         </span>
       </div>
       {error && <p className="text-white">{error}</p>}
+      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Aggiunto con successo!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

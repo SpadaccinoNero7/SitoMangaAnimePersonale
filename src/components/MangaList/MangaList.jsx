@@ -174,8 +174,6 @@ export default function MangaList() {
     dispatch(getMangaAsync());
   }, [dispatch]);
 
-  /*   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>; */
   {
     loading && <Loading />;
   }
