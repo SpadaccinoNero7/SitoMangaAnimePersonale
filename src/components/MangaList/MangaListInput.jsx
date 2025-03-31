@@ -7,8 +7,7 @@ import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addMangaAsync } from "./mangaSlice";
 import TextField from "@mui/material/TextField";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
+import SnackBar from "../../infoComponents/SnackBarComponent";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");
@@ -130,16 +129,13 @@ export default function MangaListInput() {
         </span>
       </div>
       {error && <p className="text-white">{error}</p>}
-      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          Aggiunto con successo!
-        </Alert>
-      </Snackbar>
+      <SnackBar
+        open={open}
+        duration={3000}
+        close={handleClose}
+        severity={"success"}
+        text={"Aggiunto con successo!"}
+      />
     </div>
   );
 }

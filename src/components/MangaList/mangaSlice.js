@@ -56,13 +56,11 @@ const mangaSlice = createSlice({
       .addCase(deleteMangaAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("cancellazione in corso");
       })
       .addCase(deleteMangaAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.count--;
         state.data = state.data.filter((manga) => manga.id !== action.payload);
-        console.log("cancellazione effettuata correttamente");
       })
       .addCase(deleteMangaAsync.rejected, (state, action) => {
         state.loading = false;
@@ -71,13 +69,11 @@ const mangaSlice = createSlice({
       .addCase(addMangaAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("aggiunta in corso");
       })
       .addCase(addMangaAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.count++;
         state.data.push(action.payload);
-        console.log("aggiunta effettuata correttamente");
       })
       .addCase(addMangaAsync.rejected, (state, action) => {
         state.loading = false;

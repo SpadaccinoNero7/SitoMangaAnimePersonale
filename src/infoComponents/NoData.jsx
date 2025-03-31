@@ -11,8 +11,9 @@ export default function NoData({ variant }) {
             lista!
           </h1>
         </div>
+        <br />
         <div>
-          <Link to={".."}>
+          <Link to={-1}>
             <Button color="warning" variant="contained">
               Oppure torna indietro
             </Button>

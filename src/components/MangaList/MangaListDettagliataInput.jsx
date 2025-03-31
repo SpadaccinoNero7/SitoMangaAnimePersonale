@@ -8,6 +8,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addMangaDettaglioAsync } from "./mangaDettaglioSlice";
+import SnackBar from "../../infoComponents/SnackBarComponent";
 
 export default function MangaListDettagliataInput({ manga }) {
   const [inputVolumes, setInputVolumes] = useState(1);
@@ -15,6 +16,7 @@ export default function MangaListDettagliataInput({ manga }) {
   const [inputDate, setInputDate] = useState(dayjs());
   const [error, setError] = useState(null);
   const [isValid, setIsValid] = useState(false);
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
   const handleValidation = () => {
@@ -46,10 +48,17 @@ export default function MangaListDettagliataInput({ manga }) {
         price: Number(inputPrice),
       })
     );
-    setError("Aggiunta effettuata");
+    setOpen(true);
     setInputDate(dayjs());
     setInputPrice(0);
     setInputVolumes(1);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
 
   return (
@@ -93,6 +102,13 @@ export default function MangaListDettagliataInput({ manga }) {
         </span>
       </div>
       {error && <p className="text-white">{error}</p>}
+      <SnackBar
+        close={handleClose}
+        duration={3000}
+        open={open}
+        severity={"success"}
+        text={"Aggiunto con successo!"}
+      />
     </div>
   );
 }

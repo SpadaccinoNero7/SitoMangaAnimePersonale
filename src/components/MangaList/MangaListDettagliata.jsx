@@ -21,6 +21,8 @@ import MangaListDettagliataInput from "./MangaListDettagliataInput";
 import { useDispatch, useSelector } from "react-redux";
 import { getMangaAsync } from "./mangaSlice";
 import { useEffect, useMemo, useState } from "react";
+import Loading from "../../infoComponents/Loading";
+import NoData from "../../infoComponents/NoData";
 
 /* function createData(id, volumes, date, price) {
   return {
@@ -84,7 +86,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox"></TableCell>
+        <TableCell padding="checkbox" />
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -143,20 +145,19 @@ function EnhancedTableToolbar(props) {
       ]}
     >
       <Typography
-        sx={{ flex: "1 1 100%" }}
+        sx={{ flex: "1 1 100%", backgroundColor: "black", color: "white" }}
         variant="h6"
         id="tableTitle"
         component="div"
         align="center"
       >
-        {manga ? <strong>{manga.title}</strong> : "Loading..."}
+        {manga ? <strong>{manga.title}</strong> : <Loading />}
       </Typography>
       <Tooltip title="Filtra">
         <IconButton>
           <FilterListIcon />
         </IconButton>
       </Tooltip>
-      {/* )} */}
     </Toolbar>
   );
 }
@@ -221,82 +222,89 @@ export default function MangaListDettagliata() {
     <div
       className="h-screen bg-cover bg-center flex items-center justify-between"
       style={{
-        backgroundImage: "url(/assets/wallpaper-sitopersonale-manga.jpg)",
+        backgroundImage:
+          mangaDetails && mangaDetails.length > 0
+            ? "url(/assets/wallpaper-sitopersonale-manga.jpg)"
+            : "url(/assets/marin.jpg)",
       }}
     >
       <div>
         <MangaListDettagliataInput manga={manga} />
       </div>
       <Box sx={{ width: "50%" }}>
-        <Paper sx={{ width: "50%" }}>
-          <EnhancedTableToolbar />
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 400 }}
-              aria-labelledby="tableTitle"
-              size={"medium"}
-            >
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={mangaDetails ? mangaDetails.length : 0}
-              />
-              <TableBody>
-                {visibleRows.map((manga, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+        {mangaDetails.length != 0 ? (
+          <Paper sx={{ width: "50%" }}>
+            <EnhancedTableToolbar />
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 400 }}
+                aria-labelledby="tableTitle"
+                size={"medium"}
+              >
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                  rowCount={mangaDetails ? mangaDetails.length : 0}
+                />
+                <TableBody>
+                  {visibleRows.map((manga, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, manga.id)}
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={manga.volumes}
-                    >
-                      <TableCell padding="checkbox"></TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, manga.id)}
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={manga.volumes}
                       >
-                        {manga.volumes}
-                      </TableCell>
-                      <TableCell align="center">{manga.date}</TableCell>
-                      <TableCell align="center">{manga.price}</TableCell>
+                        <TableCell padding="checkbox"></TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {manga.volumes}
+                        </TableCell>
+                        <TableCell align="center">{manga.date}</TableCell>
+                        <TableCell align="center">{manga.price}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: 33 * emptyRows,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 33 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <div className="flex justify-between items-center">
-            <Link to="/mangalist" className="ml-10">
-              <ArrowBackIcon />
-            </Link>
-            <TablePagination
-              component="div"
-              labelDisplayedRows={() => {
-                ``;
-              }}
-              count={mangaDetails ? mangaDetails.length : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPageOptions={[]}
-            />
-          </div>
-        </Paper>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <div className="flex justify-between items-center">
+              <Link to="/mangalist" className="ml-10">
+                <ArrowBackIcon />
+              </Link>
+              <TablePagination
+                component="div"
+                labelDisplayedRows={() => {
+                  ``;
+                }}
+                count={mangaDetails ? mangaDetails.length : 0}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPageOptions={[]}
+              />
+            </div>
+          </Paper>
+        ) : (
+          <NoData variant={"black"} />
+        )}
       </Box>
     </div>
   );

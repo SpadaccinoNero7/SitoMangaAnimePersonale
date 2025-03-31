@@ -3,10 +3,14 @@ import axios from "axios";
 import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
 import { TextField } from "@mui/material";
+import SnackBar from "../../infoComponents/SnackBarComponent";
 
 export default function AnimePut({ anime }) {
   const [value, setValue] = useState(anime.title || "");
   const [isCompleted, setIsCompleted] = useState(anime.completed);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openWarning, setOpenWarning] = useState(false);
+  const [openFailed, setOpenFailed] = useState(false);
 
   const handleChange = () => {
     if (value) {
@@ -17,21 +21,29 @@ export default function AnimePut({ anime }) {
           completed: isCompleted,
         })
         .then((response) => {
-          window.alert(`${anime.title} aggiornato`);
+          setOpenSuccess(true);
         })
         .catch((error) => {
-          console.error("Error updating anime:", error);
+          setOpenFailed(true);
         });
     }
+    if (value === anime.title) {
+      setOpenWarning(true);
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSuccess(false);
+    setOpenFailed(false);
+    setOpenWarning(false);
   };
 
   return (
     <>
-      {/* <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      /> */}
       <TextField
         label="Modifica titolo in corso"
         /*         sx={{
@@ -49,6 +61,27 @@ export default function AnimePut({ anime }) {
       )}
       {""}
       <CheckIcon onClick={handleChange} />
+      <SnackBar
+        open={openSuccess}
+        duration={3000}
+        close={handleClose}
+        severity={"success"}
+        text={"Aggiornato con successo!"}
+      />
+      <SnackBar
+        open={openFailed}
+        duration={3000}
+        close={handleClose}
+        severity={"error"}
+        text={"Errore nell'aggiornamento"}
+      />
+      <SnackBar
+        open={openWarning}
+        duration={3000}
+        close={handleClose}
+        severity={"warning"}
+        text={"Nome invariato, non modificato"}
+      />
     </>
   );
 }

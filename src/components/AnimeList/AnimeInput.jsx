@@ -7,22 +7,22 @@ import BlockIcon from "@mui/icons-material/Block";
 import "./HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addAnimeAsync } from "./animeSlice";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
+import SnackBar from "../../infoComponents/SnackBarComponent";
 
 export default function AnimeInput() {
   const [input, setInput] = useState("");
   const [error, setError] = useState(null);
   const [checkCompleted, setCheckCompleted] = useState(false);
-  const [isValid, setIsValid] = useState(false);
+  const [isValid, setIsValid] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openWarning, setOpenWarning] = useState(false);
   const dispatch = useDispatch();
 
   const handleCompleted = () => {
     setCheckCompleted(!checkCompleted);
   };
 
-  const handleValidation = () => {
+  /* const handleValidation = () => {
     if (input) {
       setIsValid(true);
     } else {
@@ -32,11 +32,11 @@ export default function AnimeInput() {
 
   useEffect(() => {
     handleValidation();
-  }, [input]);
+  }, [input]); */
 
   const handleAdd = () => {
     if (!input.trim()) {
-      setError("Il titolo non può essere vuoto.");
+      setOpenWarning(true);
       return;
     }
     setError(null);
@@ -55,8 +55,8 @@ export default function AnimeInput() {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
+    setOpenWarning(false);
   };
 
   return (
@@ -105,16 +105,20 @@ export default function AnimeInput() {
         </span>
       </div>
       {error && <p className="text-red-600 mt-2">{error}</p>}
-      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          Aggiunto con successo!
-        </Alert>
-      </Snackbar>
+      <SnackBar
+        open={open}
+        duration={5000}
+        close={handleClose}
+        severity={"success"}
+        text={"Aggiunto con successo!"}
+      />
+      <SnackBar
+        open={openWarning}
+        duration={5000}
+        close={handleClose}
+        severity={"warning"}
+        text={"Il titolo non può essere vuoto!"}
+      />
     </div>
   );
 }
