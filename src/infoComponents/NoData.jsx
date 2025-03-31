@@ -6,13 +6,7 @@ export default function NoData({ variant }) {
     <>
       <div className="flex justify-center mb-auto flex-col items-center">
         <div>
-          <h1
-            className={
-              variant === "white" || variant === "black"
-                ? `text-${variant}`
-                : `text-${variant}-500`
-            }
-          >
+          <h1 className={`text-${variant}`}>
             Non ci sono dati al momento, aggiungine almeno uno per vedere la
             lista!
           </h1>
