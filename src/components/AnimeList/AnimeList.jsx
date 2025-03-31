@@ -22,8 +22,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AnimeInput from "./AnimeInput";
 import AnimePut from "./AnimePut";
 import { deleteAnimeAsync, getAnimeAsync } from "./animeSlice";
-import Loading from "../../Loading";
-import Error from "../../Error";
+import Loading from "../../infoComponents/Loading";
+import Error from "../../infoComponents/Error";
+import NoData from "../../infoComponents/NoData";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -124,7 +125,7 @@ export default function AnimeList() {
   }
 
   {
-    error & <Error error={error} />;
+    error && <Error error={error} />;
   }
 
   const handleRequestSort = (event, property) => {
@@ -140,7 +141,7 @@ export default function AnimeList() {
   const toggleEditMode = (id) => {
     setEditModes((prev) => ({
       ...prev,
-      [id]: !prev[id], // Inverti il valore di editMode per l'elemento con l'ID specificato
+      [id]: !prev[id],
     }));
   };
 
@@ -162,7 +163,10 @@ export default function AnimeList() {
       <div
         className="h-screen bg-cover bg-right-bottom"
         style={{
-          backgroundImage: "url(/assets/wallpaper-sitopersonale-anime.jpg)",
+          backgroundImage:
+            data && data.length > 0
+              ? "url(/assets/wallpaper-sitopersonale-anime.jpg)"
+              : "url(/assets/eren.jpg)",
         }}
       >
         <div className="flex h-[50%]"></div>
@@ -170,103 +174,107 @@ export default function AnimeList() {
           <AnimeInput />
         </div>
         <div className="flex h-[50%] justify-center items-end">
-          <Box className="xl:w-[30%]">
-            <Paper sx={{ width: "100%", mb: 2 }}>
-              <TableContainer>
-                <Table
-                  sx={{ minWidth: 500 }}
-                  aria-labelledby="tableTitle"
-                  size={window.innerWidth <= 1272 ? "small" : "medium"}
-                >
-                  <EnhancedTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    onRequestSort={handleRequestSort}
-                    rowCount={data ? data.length : 0}
-                  />
-                  <TableBody>
-                    {visibleRows.map((anime, index) => {
-                      const labelId = `enhanced-table-checkbox-${index}`;
-                      const isEditMode = editModes[anime.id] || false; // Ottieni lo stato di editMode per l'elemento
-                      return (
-                        <TableRow
-                          hover
-                          role="checkbox"
-                          tabIndex={-1}
-                          key={anime.id}
-                        >
-                          <TableCell padding="checkbox">
-                            {!isEditMode && (
-                              <EditIcon
-                                onClick={() => toggleEditMode(anime.id)}
-                              />
-                            )}
-                            {isEditMode && (
-                              <CheckIcon
-                                onClick={() => toggleEditMode(anime.id)}
-                              />
-                            )}
-                          </TableCell>
-                          <TableCell
-                            component="th"
-                            id={labelId}
-                            scope="row"
-                            padding="none"
+          {data.length != 0 ? (
+            <Box className="xl:w-[30%]">
+              <Paper sx={{ width: "100%", mb: 2 }}>
+                <TableContainer>
+                  <Table
+                    sx={{ minWidth: 500 }}
+                    aria-labelledby="tableTitle"
+                    size={window.innerWidth <= 1272 ? "small" : "medium"}
+                  >
+                    <EnhancedTableHead
+                      order={order}
+                      orderBy={orderBy}
+                      onRequestSort={handleRequestSort}
+                      rowCount={data ? data.length : 0}
+                    />
+                    <TableBody>
+                      {visibleRows.map((anime, index) => {
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        const isEditMode = editModes[anime.id] || false; // Ottieni lo stato di editMode per l'elemento
+                        return (
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={anime.id}
                           >
-                            {isEditMode ? (
-                              <AnimePut anime={anime} />
-                            ) : (
-                              `${anime.title}`
-                            )}
-                          </TableCell>
-                          <TableCell align="right">
-                            {anime.completed ? (
-                              <CheckIcon color="success" />
-                            ) : (
-                              <CloseIcon color="warning" />
-                            )}
-                          </TableCell>
-                          <TableCell align="right">
-                            <DeleteIcon
-                              onClick={() =>
-                                dispatch(deleteAnimeAsync(anime.id))
-                              }
-                              style={{ cursor: "pointer" }}
-                            />
-                          </TableCell>
+                            <TableCell padding="checkbox">
+                              {!isEditMode && (
+                                <EditIcon
+                                  onClick={() => toggleEditMode(anime.id)}
+                                />
+                              )}
+                              {isEditMode && (
+                                <CheckIcon
+                                  onClick={() => toggleEditMode(anime.id)}
+                                />
+                              )}
+                            </TableCell>
+                            <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none"
+                            >
+                              {isEditMode ? (
+                                <AnimePut anime={anime} />
+                              ) : (
+                                `${anime.title}`
+                              )}
+                            </TableCell>
+                            <TableCell align="right">
+                              {anime.completed ? (
+                                <CheckIcon color="success" />
+                              ) : (
+                                <CloseIcon color="warning" />
+                              )}
+                            </TableCell>
+                            <TableCell align="right">
+                              <DeleteIcon
+                                onClick={() =>
+                                  dispatch(deleteAnimeAsync(anime.id))
+                                }
+                                style={{ cursor: "pointer" }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                      {emptyRows > 0 && (
+                        <TableRow
+                          style={{
+                            height: 33 * emptyRows,
+                          }}
+                        >
+                          <TableCell colSpan={6} />
                         </TableRow>
-                      );
-                    })}
-                    {emptyRows > 0 && (
-                      <TableRow
-                        style={{
-                          height: 33 * emptyRows,
-                        }}
-                      >
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <div className="flex justify-between items-center">
-                <Link to="/" className="ml-10">
-                  <ArrowBackIcon />
-                </Link>
-                <TablePagination
-                  component="div"
-                  labelDisplayedRows={() => {
-                    ``;
-                  }}
-                  count={data ? data.length : 0}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  rowsPerPageOptions={[]}
-                />
-              </div>
-            </Paper>
-          </Box>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div className="flex justify-between items-center">
+                  <Link to="/" className="ml-10">
+                    <ArrowBackIcon />
+                  </Link>
+                  <TablePagination
+                    component="div"
+                    labelDisplayedRows={() => {
+                      ``;
+                    }}
+                    count={data ? data.length : 0}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPageOptions={[]}
+                  />
+                </div>
+              </Paper>
+            </Box>
+          ) : (
+            <NoData variant={"white"} />
+          )}
         </div>
       </div>
     </>

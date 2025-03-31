@@ -27,9 +27,10 @@ import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MangaListInput from "./MangaListInput";
 import { getMangaAsync } from "./mangaSlice";
-import Loading from "../../Loading";
-import Error from "../../Error";
 import { useEffect, useState } from "react";
+import Loading from "../../infoComponents/Loading";
+import Error from "../../infoComponents/Error";
+import NoData from "../../infoComponents/NoData";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -200,94 +201,101 @@ export default function MangaList() {
     <div
       className="h-screen bg-cover bg-center flex justify-end items-center pr-5"
       style={{
-        backgroundImage: "url(/assets/wallpaper-sitopersonale-manga.jpg)",
+        backgroundImage:
+          data && data.length > 0
+            ? "url(/assets/wallpaper-sitopersonale-manga.jpg)"
+            : "url(/assets/sao.jpg)",
       }}
     >
       <div className="absolute left-5">
         <MangaListInput />
       </div>
       <div className="w-[50%]">
-        <TableContainer
-          component={Paper}
-          /* sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }} */
-        >
-          <Table
-            aria-label="collapsible table"
-            size={width <= 1272 ? "small" : "medium"}
+        {data.length != 0 ? (
+          <TableContainer
+            component={Paper}
+            /* sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }} */
           >
-            <TableHead>
-              <TableRow sx={{ backgroundColor: "black" }}>
-                <TableCell />
-                <TableCell sx={{ color: "white" }}>
-                  <Typography variant="h6" gutterBottom component="div">
-                    Titolo
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  <Typography variant="h6" gutterBottom component="div">
-                    Autore
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  <Typography variant="h6" gutterBottom component="div">
-                    Completata
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ color: "white" }} align="right">
-                  <Typography variant="h6" gutterBottom component="div">
-                    Elimina
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(rowsPerPage > 0
-                ? data.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                : data
-              ).map((row) => (
-                <Row key={row.id} row={row} />
-              ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+            <Table
+              aria-label="collapsible table"
+              size={width <= 1272 ? "small" : "medium"}
+            >
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "black" }}>
+                  <TableCell />
+                  <TableCell sx={{ color: "white" }}>
+                    <Typography variant="h6" gutterBottom component="div">
+                      Titolo
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }} align="right">
+                    <Typography variant="h6" gutterBottom component="div">
+                      Autore
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }} align="right">
+                    <Typography variant="h6" gutterBottom component="div">
+                      Completata
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }} align="right">
+                    <Typography variant="h6" gutterBottom component="div">
+                      Elimina
+                    </Typography>
+                  </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-            <TableFooter>
-              <TableRow className="flex justify-between items-center">
-                <TableCell colSpan={1}>
-                  <Link to="/">
-                    <HomeIcon />
-                  </Link>
-                </TableCell>
-                <TablePagination
-                  rowsPerPageOptions={[]}
-                  labelDisplayedRows={() => {
-                    ``;
-                  }}
-                  colSpan={3}
-                  count={data.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  slotProps={{
-                    select: {
-                      inputProps: {
-                        "aria-label": "rows per page",
+              </TableHead>
+              <TableBody>
+                {(rowsPerPage > 0
+                  ? data.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : data
+                ).map((row) => (
+                  <Row key={row.id} row={row} />
+                ))}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+              <TableFooter>
+                <TableRow className="flex justify-between items-center">
+                  <TableCell colSpan={1}>
+                    <Link to="/">
+                      <HomeIcon />
+                    </Link>
+                  </TableCell>
+                  <TablePagination
+                    rowsPerPageOptions={[]}
+                    labelDisplayedRows={() => {
+                      ``;
+                    }}
+                    colSpan={3}
+                    count={data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    slotProps={{
+                      select: {
+                        inputProps: {
+                          "aria-label": "rows per page",
+                        },
+                        native: true,
                       },
-                      native: true,
-                    },
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
+                    }}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
+        ) : (
+          <NoData variant={"black"} />
+        )}
       </div>
     </div>
   );
