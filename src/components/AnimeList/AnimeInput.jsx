@@ -7,7 +7,9 @@ import BlockIcon from "@mui/icons-material/Block";
 import "./HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addAnimeAsync } from "./animeSlice";
-import SnackBar from "../../infoComponents/SnackBarComponent";
+import SnackBar from "../infoComponents/SnackBarComponent";
+import { Autocomplete } from "@mui/material";
+import { useFetch } from "../customHooks/useFetch";
 
 export default function AnimeInput() {
   const [input, setInput] = useState("");
@@ -18,31 +20,46 @@ export default function AnimeInput() {
   const [openWarning, setOpenWarning] = useState(false);
   const dispatch = useDispatch();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data, loading } = useFetch(
+    `https://api.jikan.moe/v4/anime?page=${currentPage}&q=${searchQuery}`
+  );
+
+  const handleChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const handleSearchChange = (event, value) => {
+    setSearchQuery(value);
+  };
+
+  const handleSelectChange = (event, value) => {
+    if (value) {
+      setInput(value);
+    }
+  };
+
+  useEffect(() => {}, [currentPage, searchQuery]);
+
   const handleCompleted = () => {
     setCheckCompleted(!checkCompleted);
   };
 
-  /* const handleValidation = () => {
-    if (input) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
-  };
-
-  useEffect(() => {
-    handleValidation();
-  }, [input]); */
-
   const handleAdd = () => {
-    if (!input.trim()) {
+    if (!input || typeof input !== "object") {
+      setOpenWarning(true);
+      return;
+    }
+    const animeTitle = input.title_english || input.title || "";
+    if (!animeTitle) {
       setOpenWarning(true);
       return;
     }
     setError(null);
     dispatch(
       addAnimeAsync({
-        title: input.trim(),
+        title: animeTitle,
         completed: checkCompleted,
       })
     );
@@ -60,19 +77,21 @@ export default function AnimeInput() {
   };
 
   return (
-    <div className="bg-red-400 p-4 flex items-center justify-around">
-      {/* <input
-        type="text"
+    <div className="bg-red-400 p-4 flex items-center justify-around w-100">
+      <Autocomplete
+        freeSolo
+        options={data.data}
+        getOptionLabel={(option) => option.title_english || option.title || ""}
+        onInputChange={handleSearchChange}
+        onChange={handleSelectChange}
         value={input}
-        placeholder="Aggiungi il titolo..."
-        onChange={(e) => setInput(e.target.value)}
-        className="p-2 border rounded"
-      /> */}
-      <TextField
-        label="Titolo"
-        variant="outlined"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        fullWidth
+        renderInput={(params) => <TextField {...params} label="Cerca Anime" />}
+        renderOption={(props, option) => (
+          <li {...props} key={option.mal_id}>
+            <strong>{option.title_english || option.title}</strong>
+          </li>
+        )}
       />
       <div className="tooltip">
         {checkCompleted ? (

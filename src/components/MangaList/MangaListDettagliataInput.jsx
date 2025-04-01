@@ -8,7 +8,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addMangaDettaglioAsync } from "./mangaDettaglioSlice";
-import SnackBar from "../../infoComponents/SnackBarComponent";
+import SnackBar from "../infoComponents/SnackBarComponent";
 
 export default function MangaListDettagliataInput({ manga }) {
   const [inputVolumes, setInputVolumes] = useState(1);

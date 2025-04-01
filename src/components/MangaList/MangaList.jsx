@@ -29,9 +29,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import MangaListInput from "./MangaListInput";
 import { getMangaAsync } from "./mangaSlice";
 import { useEffect, useState } from "react";
-import Loading from "../../infoComponents/Loading";
-import Error from "../../infoComponents/Error";
-import NoData from "../../infoComponents/NoData";
+import Loading from "../infoComponents/Loading";
+import Error from "../infoComponents/Error";
+import NoData from "../infoComponents/NoData";
 import MangaListPut from "./MangaListPut";
 
 function TablePaginationActions(props) {

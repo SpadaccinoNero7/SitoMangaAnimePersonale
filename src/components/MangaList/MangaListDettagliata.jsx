@@ -21,8 +21,8 @@ import MangaListDettagliataInput from "./MangaListDettagliataInput";
 import { useDispatch, useSelector } from "react-redux";
 import { getMangaAsync } from "./mangaSlice";
 import { useEffect, useMemo, useState } from "react";
-import Loading from "../../infoComponents/Loading";
-import NoData from "../../infoComponents/NoData";
+import Loading from "../infoComponents/Loading";
+import NoData from "../infoComponents/NoData";
 
 /* function createData(id, volumes, date, price) {
   return {

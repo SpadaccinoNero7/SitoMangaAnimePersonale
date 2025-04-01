@@ -3,7 +3,7 @@ import axios from "axios";
 import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
 import { TextField } from "@mui/material";
-import SnackBar from "../../infoComponents/SnackBarComponent";
+import SnackBar from "../infoComponents/SnackBarComponent";
 import { useDispatch } from "react-redux";
 import { putAnimeAsync } from "./animeSlice";
 

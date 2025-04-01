@@ -7,7 +7,7 @@ import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addMangaAsync } from "./mangaSlice";
 import TextField from "@mui/material/TextField";
-import SnackBar from "../../infoComponents/SnackBarComponent";
+import SnackBar from "../infoComponents/SnackBarComponent";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");

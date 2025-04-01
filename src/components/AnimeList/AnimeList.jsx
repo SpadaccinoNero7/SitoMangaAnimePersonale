@@ -22,10 +22,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AnimeInput from "./AnimeInput";
 import AnimePut from "./AnimePut";
 import { deleteAnimeAsync, getAnimeAsync } from "./animeSlice";
-import Loading from "../../infoComponents/Loading";
-import Error from "../../infoComponents/Error";
-import NoData from "../../infoComponents/NoData";
-import DeleteConfirm from "../../infoComponents/DeleteConfirm";
+import Loading from "../infoComponents/Loading";
+import Error from "../infoComponents/Error";
+import NoData from "../infoComponents/NoData";
+import DeleteConfirm from "../infoComponents/DeleteConfirm";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
