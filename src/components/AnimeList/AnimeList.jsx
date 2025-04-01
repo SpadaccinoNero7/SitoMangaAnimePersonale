@@ -25,6 +25,7 @@ import { deleteAnimeAsync, getAnimeAsync } from "./animeSlice";
 import Loading from "../../infoComponents/Loading";
 import Error from "../../infoComponents/Error";
 import NoData from "../../infoComponents/NoData";
+import DeleteConfirm from "../../infoComponents/DeleteConfirm";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -113,6 +114,20 @@ export default function AnimeList() {
   const [rowsPerPage] = useState(5);
   const [editModes, setEditModes] = useState({});
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(null); // Cambia lo stato da booleano a un ID o null
+
+  const handleOpen = (id) => {
+    setOpen(id); // Imposta l'ID dell'anime selezionato
+  };
+
+  const handleClose = () => {
+    setOpen(null); // Resetta lo stato a null
+  };
+
+  const handleAccept = (id) => {
+    dispatch(deleteAnimeAsync(id)); // Elimina l'anime con l'ID specifico
+    setOpen(null); // Chiudi il dialogo
+  };
 
   const { data, loading, error } = useSelector((state) => state.anime);
 
@@ -233,11 +248,17 @@ export default function AnimeList() {
                             </TableCell>
                             <TableCell align="right">
                               <DeleteIcon
-                                onClick={() =>
-                                  dispatch(deleteAnimeAsync(anime.id))
-                                }
+                                onClick={() => handleOpen(anime.id)}
                                 style={{ cursor: "pointer" }}
                               />
+                              {open === anime.id && (
+                                <DeleteConfirm
+                                  open={true}
+                                  handleClose={handleClose}
+                                  value={anime}
+                                  handleAccept={() => handleAccept(anime.id)}
+                                />
+                              )}
                             </TableCell>
                           </TableRow>
                         );
