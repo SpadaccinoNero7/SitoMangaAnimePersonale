@@ -9,6 +9,18 @@ export const getAnimeAsync = createAsyncThunk(
   }
 );
 
+export const putAnimeAsync = createAsyncThunk(
+  "anime/putAnimeAsync",
+  async (payload) => {
+    const response = await axios.put("http://localhost:8080/anime/anime", {
+      id: payload.id,
+      title: payload.title,
+      completed: payload.completed,
+    });
+    return response.data;
+  }
+);
+
 export const deleteAnimeAsync = createAsyncThunk(
   "anime/deleteAnimeAsync",
   async (id) => {
@@ -81,6 +93,26 @@ const animeSlice = createSlice({
       .addCase(addAnimeAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(putAnimeAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        console.log("modifica in corso");
+      })
+      .addCase(putAnimeAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.data.findIndex(
+          (anime) => anime.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.data[index] = action.payload; // Aggiorna l'elemento esistente
+        }
+        console.log("modifica effettuata correttamente");
+      })
+      .addCase(putAnimeAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        console.log("errore nella modifica");
       });
   },
 });

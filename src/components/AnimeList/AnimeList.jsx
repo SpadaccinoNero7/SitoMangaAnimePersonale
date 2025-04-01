@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../AnimeList/HoverTextCheckbox.css";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -107,11 +107,11 @@ EnhancedTableHead.propTypes = {
 };
 
 export default function AnimeList() {
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("title");
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage] = React.useState(5);
-  const [editModes, setEditModes] = React.useState({}); // Stato per tracciare editMode per ogni elemento
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("title");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage] = useState(5);
+  const [editModes, setEditModes] = useState({});
   const dispatch = useDispatch();
 
   const { data, loading, error } = useSelector((state) => state.anime);
@@ -148,7 +148,7 @@ export default function AnimeList() {
   const emptyRows =
     page > 0 && data ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
       data
         ? [...data]
@@ -192,7 +192,7 @@ export default function AnimeList() {
                     <TableBody>
                       {visibleRows.map((anime, index) => {
                         const labelId = `enhanced-table-checkbox-${index}`;
-                        const isEditMode = editModes[anime.id] || false; // Ottieni lo stato di editMode per l'elemento
+                        const isEditMode = editModes[anime.id] || false;
                         return (
                           <TableRow
                             hover

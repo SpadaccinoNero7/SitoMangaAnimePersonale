@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -31,6 +32,7 @@ import { useEffect, useState } from "react";
 import Loading from "../../infoComponents/Loading";
 import Error from "../../infoComponents/Error";
 import NoData from "../../infoComponents/NoData";
+import MangaListPut from "./MangaListPut";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -103,6 +105,7 @@ TablePaginationActions.propTypes = {
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = useState(false);
+  const [editModes, setEditModes] = useState(false);
 
   return (
     <>
@@ -117,7 +120,9 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row" sx={{ color: "red" }}>
-          <Typography sx={{ fontWeight: "bold" }}>{row.title}</Typography>
+          <Typography sx={{ fontWeight: "bold" }}>
+            {editModes ? <MangaListPut manga={row} /> : `${row.title}`}
+          </Typography>
         </TableCell>
         <TableCell align="right">
           <Typography sx={{ fontWeight: "bold" }}>{row.author}</Typography>

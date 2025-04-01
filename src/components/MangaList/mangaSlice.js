@@ -9,6 +9,19 @@ export const getMangaAsync = createAsyncThunk(
   }
 );
 
+export const putMangaAsync = createAsyncThunk(
+  "manga/putMangaAsync",
+  async (payload) => {
+    const response = await axios.put("http://localhost:8080/manga/manga", {
+      id: 0,
+      title: payload.title,
+      author: payload.author,
+      completed: payload.completed,
+    });
+    return response.data;
+  }
+);
+
 export const deleteMangaAsync = createAsyncThunk(
   "manga/deleteMangaAsync",
   async (id) => {
@@ -78,6 +91,21 @@ const mangaSlice = createSlice({
       .addCase(addMangaAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(putMangaAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        console.log("modifica in corso");
+      })
+      .addCase(putMangaAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data.push(action.payload);
+        console.log("modifica effettuata correttamente");
+      })
+      .addCase(putMangaAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        console.log(`errore`);
       });
   },
 });

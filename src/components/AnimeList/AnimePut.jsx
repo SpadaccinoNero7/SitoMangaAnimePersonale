@@ -4,6 +4,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
 import { TextField } from "@mui/material";
 import SnackBar from "../../infoComponents/SnackBarComponent";
+import { useDispatch } from "react-redux";
+import { putAnimeAsync } from "./animeSlice";
 
 export default function AnimePut({ anime }) {
   const [value, setValue] = useState(anime.title || "");
@@ -11,24 +13,25 @@ export default function AnimePut({ anime }) {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openWarning, setOpenWarning] = useState(false);
   const [openFailed, setOpenFailed] = useState(false);
+  const dispatch = useDispatch();
 
   const handleChange = () => {
+    if (value === anime.title) {
+      setOpenWarning(true);
+      return;
+    }
+
     if (value) {
-      axios
-        .put("http://localhost:8080/anime/anime", {
+      dispatch(
+        putAnimeAsync({
           id: anime.id,
           title: value,
           completed: isCompleted,
         })
-        .then((response) => {
-          setOpenSuccess(true);
-        })
-        .catch((error) => {
-          setOpenFailed(true);
-        });
-    }
-    if (value === anime.title) {
-      setOpenWarning(true);
+      );
+      setOpenSuccess(true);
+    } else {
+      setOpenFailed(true);
     }
   };
 
@@ -46,11 +49,6 @@ export default function AnimePut({ anime }) {
     <>
       <TextField
         label="Modifica titolo in corso"
-        /*         sx={{
-          backgroundColor: "green",
-          color: "white",
-          fontSize: "1rem",
-        }} */
         variant="standard"
         size="small"
         value={value}
