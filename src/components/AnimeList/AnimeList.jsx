@@ -217,7 +217,7 @@ export default function AnimeList() {
                             key={anime.id}
                           >
                             <TableCell padding="checkbox">
-                              {!isEditMode ? (
+                              {/* {!isEditMode ? (
                                 <EditIcon
                                   onClick={() => {
                                     toggleEditMode(anime.id);
@@ -229,7 +229,7 @@ export default function AnimeList() {
                                     toggleEditMode(anime.id);
                                   }}
                                 />
-                              )}
+                              )} */}
                             </TableCell>
                             <TableCell
                               component="th"
@@ -238,16 +238,12 @@ export default function AnimeList() {
                               padding="none"
                             >
                               {isEditMode ? (
-                                /* <AnimePut anime={anime} /> */
                                 <AnimePutGrande
                                   anime={anime}
                                   handleClose={handleClose}
                                   open={true}
                                 />
                               ) : (
-                                /* <Link to={`/singleAnime/${anime.id}`}>
-                                  {anime.title}
-                                  </Link> */
                                 `${anime.title}`
                               )}
                             </TableCell>
