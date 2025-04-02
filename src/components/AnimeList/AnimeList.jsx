@@ -26,6 +26,7 @@ import Loading from "../infoComponents/Loading";
 import Error from "../infoComponents/Error";
 import NoData from "../infoComponents/NoData";
 import DeleteConfirm from "../infoComponents/DeleteConfirm";
+import AnimePutGrande from "./AnimePutGrande";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -114,19 +115,19 @@ export default function AnimeList() {
   const [rowsPerPage] = useState(5);
   const [editModes, setEditModes] = useState({});
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(null); // Cambia lo stato da booleano a un ID o null
+  const [open, setOpen] = useState(null);
 
   const handleOpen = (id) => {
-    setOpen(id); // Imposta l'ID dell'anime selezionato
+    setOpen(id);
   };
 
   const handleClose = () => {
-    setOpen(null); // Resetta lo stato a null
+    setOpen(null);
   };
 
   const handleAccept = (id) => {
-    dispatch(deleteAnimeAsync(id)); // Elimina l'anime con l'ID specifico
-    setOpen(null); // Chiudi il dialogo
+    dispatch(deleteAnimeAsync(id));
+    setOpen(null);
   };
 
   const { data, loading, error } = useSelector((state) => state.anime);
@@ -216,14 +217,17 @@ export default function AnimeList() {
                             key={anime.id}
                           >
                             <TableCell padding="checkbox">
-                              {!isEditMode && (
+                              {!isEditMode ? (
                                 <EditIcon
-                                  onClick={() => toggleEditMode(anime.id)}
+                                  onClick={() => {
+                                    toggleEditMode(anime.id);
+                                  }}
                                 />
-                              )}
-                              {isEditMode && (
+                              ) : (
                                 <CheckIcon
-                                  onClick={() => toggleEditMode(anime.id)}
+                                  onClick={() => {
+                                    toggleEditMode(anime.id);
+                                  }}
                                 />
                               )}
                             </TableCell>
@@ -234,8 +238,16 @@ export default function AnimeList() {
                               padding="none"
                             >
                               {isEditMode ? (
-                                <AnimePut anime={anime} />
+                                /* <AnimePut anime={anime} /> */
+                                <AnimePutGrande
+                                  anime={anime}
+                                  handleClose={handleClose}
+                                  open={true}
+                                />
                               ) : (
+                                /* <Link to={`/singleAnime/${anime.id}`}>
+                                  {anime.title}
+                                  </Link> */
                                 `${anime.title}`
                               )}
                             </TableCell>

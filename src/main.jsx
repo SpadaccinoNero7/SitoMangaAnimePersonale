@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/store.js";
 import Test from "./components/test.jsx";
 import TestDettaglio from "./components/TestDettaglio.jsx";
+import AnimeDettaglio from "./components/AnimeList/AnimeDettaglio.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")).render(
         <Routes>
           <Route path="" element={<App />} />
           <Route path="animeList" element={<AnimeList />} />
+          <Route path="singleAnime/:animeId" element={<AnimeDettaglio />} />
           <Route path="mangaList" element={<MangaList />}></Route>
           <Route
             path="singleManga/:mangaId"

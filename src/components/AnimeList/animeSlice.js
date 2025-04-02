@@ -67,13 +67,11 @@ const animeSlice = createSlice({
       .addCase(deleteAnimeAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("cancellazione in corso");
       })
       .addCase(deleteAnimeAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.count--;
         state.data = state.data.filter((anime) => anime.id !== action.payload);
-        console.log("cancellazione effettuata correttamente");
       })
       .addCase(deleteAnimeAsync.rejected, (state, action) => {
         state.loading = false;
@@ -82,13 +80,11 @@ const animeSlice = createSlice({
       .addCase(addAnimeAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("aggiunta in corso");
       })
       .addCase(addAnimeAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.count++;
         state.data.push(action.payload);
-        console.log("aggiunta effettuata correttamente");
       })
       .addCase(addAnimeAsync.rejected, (state, action) => {
         state.loading = false;
@@ -97,7 +93,6 @@ const animeSlice = createSlice({
       .addCase(putAnimeAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("modifica in corso");
       })
       .addCase(putAnimeAsync.fulfilled, (state, action) => {
         state.loading = false;
@@ -107,12 +102,10 @@ const animeSlice = createSlice({
         if (index !== -1) {
           state.data[index] = action.payload; // Aggiorna l'elemento esistente
         }
-        console.log("modifica effettuata correttamente");
       })
       .addCase(putAnimeAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-        console.log("errore nella modifica");
       });
   },
 });

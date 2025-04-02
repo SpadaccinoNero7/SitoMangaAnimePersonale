@@ -33,8 +33,11 @@ export default function DeleteConfirm({
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Dopo la conferma <strong>NON</strong> sarà possibile tornare
-            indietro!
+            Dopo la conferma{" "}
+            <strong>
+              <u>NON</u>
+            </strong>{" "}
+            sarà possibile tornare indietro!
           </DialogContentText>
         </DialogContent>
         <DialogActions>
