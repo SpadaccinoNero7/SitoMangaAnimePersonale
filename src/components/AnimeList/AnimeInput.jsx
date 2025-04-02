@@ -31,7 +31,11 @@ export default function AnimeInput() {
   };
 
   const handleSearchChange = (event, value) => {
-    setSearchQuery(value);
+    if (value.length > 3) {
+      setSearchQuery(value);
+    } else {
+      return;
+    }
   };
 
   const handleSelectChange = (event, value) => {
