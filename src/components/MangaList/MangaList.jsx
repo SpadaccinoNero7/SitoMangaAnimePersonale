@@ -27,12 +27,13 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MangaListInput from "./MangaListInput";
-import { getMangaAsync } from "./mangaSlice";
+import { deleteMangaAsync, getMangaAsync } from "./mangaSlice";
 import { useEffect, useState } from "react";
 import Loading from "../infoComponents/Loading";
 import Error from "../infoComponents/Error";
 import NoData from "../infoComponents/NoData";
 import MangaListPut from "./MangaListPut";
+import DeleteConfirm from "../infoComponents/DeleteConfirm";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -104,8 +105,23 @@ TablePaginationActions.propTypes = {
 
 function Row(props) {
   const { row } = props;
+  const [openDetails, setOpenDetails] = useState(false);
   const [open, setOpen] = useState(false);
   const [editModes, setEditModes] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleOpen = (id) => {
+    setOpen(id);
+  };
+
+  const handleClose = () => {
+    setOpen(null);
+  };
+
+  const handleAccept = (id) => {
+    dispatch(deleteMangaAsync(id));
+    setOpen(null);
+  };
 
   return (
     <>
@@ -114,9 +130,9 @@ function Row(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={() => setOpenDetails(!openDetails)}
           >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {openDetails ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row" sx={{ color: "red" }}>
@@ -135,12 +151,23 @@ function Row(props) {
           )}
         </TableCell>
         <TableCell align="right">
-          <DeleteIcon />
+          <DeleteIcon
+            onClick={() => handleOpen(row.id)}
+            style={{ cursor: "pointer" }}
+          />
+          {open === row.id && (
+            <DeleteConfirm
+              open={true}
+              handleClose={handleClose}
+              value={row}
+              handleAccept={() => handleAccept(row.id)}
+            />
+          )}
         </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={openDetails} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Link to={`/singleManga/${row.id}`}>
                 <Typography variant="h6" gutterBottom component="div">
