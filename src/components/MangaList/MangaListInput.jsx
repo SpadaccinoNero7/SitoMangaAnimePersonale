@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { addMangaAsync } from "./mangaSlice";
 import TextField from "@mui/material/TextField";
 import SnackBar from "../infoComponents/SnackBarComponent";
+import { useFetch } from "../customHooks/useFetch";
+import { Autocomplete, Fade, Tooltip, Zoom } from "@mui/material";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");
@@ -16,7 +18,40 @@ export default function MangaListInput() {
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [open, setOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null); // Nuovo stato per il valore selezionato
   const dispatch = useDispatch();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data } = useFetch(
+    `https://api.jikan.moe/v4/manga?page=${currentPage}&q=${searchQuery}`
+  );
+
+  const handleChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const handleSearchChange = (event, value) => {
+    setSearchQuery(value);
+    /* if (value.length > 3) {
+      setSearchQuery(value);
+      console.log("searchQuery", searchQuery);
+    } else {
+      return;
+    } */
+  };
+
+  const handleSelectChange = (event, value) => {
+    setSelectedOption(value); // Aggiorna lo stato con l'opzione selezionata
+    if (value) {
+      setInputTitle(value.title_english || value.title || ""); // Aggiorna il titolo
+      const oldAuthor = value?.authors?.[0]?.name || "";
+      setInputAuthor(oldAuthor.replace(/,/g, "")); // Aggiorna l'autore
+    } else {
+      setInputTitle(""); // Resetta il titolo se non c'è una selezione
+      setInputAuthor(""); // Resetta l'autore
+    }
+  };
 
   const handleCompleted = () => {
     setCheckCompleted(!checkCompleted);
@@ -35,19 +70,19 @@ export default function MangaListInput() {
   }, [inputTitle, inputAuthor]);
 
   const handleAdd = () => {
-    if (!inputTitle.trim()) {
+    /* if (!inputTitle.trim()) {
       setError("Il titolo non può essere vuoto.");
       return;
     } else if (!inputAuthor.trim()) {
       setError("L'autore deve essere aggiunto");
       return;
-    }
+    } */
 
     setError(null);
     dispatch(
       addMangaAsync({
-        title: inputTitle.trim(),
-        author: inputAuthor.trim(),
+        title: inputTitle,
+        author: inputAuthor,
         completed: checkCompleted,
       })
     );
@@ -67,36 +102,82 @@ export default function MangaListInput() {
 
   return (
     <div className="bg-red-400 w-fit p-4">
-      {/*       <input
-        type="text"
-        value={inputTitle}
-        placeholder="Aggiungi il titolo..."
-        onChange={(e) => setInputTitle(e.target.value)}
-        className="p-2 border rounded"
-      /> */}
-      <TextField
+      {/* <TextField
         label="Titolo"
         variant="outlined"
         placeholder="Inserisci il titolo"
         onChange={(e) => setInputTitle(e.target.value)}
         value={inputTitle}
         margin="dense"
+      /> */}
+      <Autocomplete
+        autoHighlight
+        openText="Apri"
+        closeText="Chiudi"
+        loading
+        clearText="Cancella"
+        loadingText="Ricerca in corso..."
+        options={data.data}
+        getOptionLabel={(option) => option.title_english || option.title || ""}
+        onInputChange={handleSearchChange}
+        onChange={handleSelectChange}
+        value={selectedOption}
+        fullWidth
+        renderInput={(params) => <TextField {...params} label="Cerca Manga" />}
+        renderOption={(props, option) => (
+          <li {...props} key={option.mal_id}>
+            <strong>{option.title_english || option.title}</strong> (
+            {option.mal_id})
+          </li>
+        )}
       />
       <br />
-      <TextField
+      <Tooltip
+        title="L' autore viene aggiunto in automatico"
+        slotProps={{
+          tooltip: {
+            sx: {
+              backgroundColor: "green",
+              color: "white",
+              padding: "5%",
+              fontSize: "15px",
+            },
+          },
+        }}
+        slots={{
+          transition: Zoom,
+        }}
+      >
+        <TextField
+          value={inputAuthor}
+          readOnly
+          placeholder="Autore"
+          disabled
+          sx={{
+            backgroundColor: "white",
+            color: "red",
+          }}
+        />
+      </Tooltip>
+      {/* <TextField
+        value={inputAuthor}
+        placeholder="L'autore viene aggiunto in automatico"
+        readOnly
+        multiline
+        InputProps={{
+          style: {
+            backgroundColor: "green",
+            color: "white",
+          },
+        }}
+      /> */}
+      {/* <TextField
         label="Autore"
         variant="outlined"
         placeholder="Inserisci l'autore"
         value={inputAuthor}
         margin="dense"
         onChange={(e) => setInputAuthor(e.target.value)}
-      />
-      {/*       <input
-        type="text"
-        value={inputAuthor}
-        placeholder="Aggiungi l'autore..."
-        onChange={(e) => setInputAuthor(e.target.value)}
-        className="p-2 border rounded"
       /> */}
       <div className="tooltip">
         {checkCompleted ? (

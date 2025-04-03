@@ -6,7 +6,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BlockIcon from "@mui/icons-material/Block";
 import "./HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
-import { addAnimeAsync } from "./animeSlice";
+import { addAnimeAsync, setSelectedAnimeId } from "./animeSlice";
 import SnackBar from "../infoComponents/SnackBarComponent";
 import { Autocomplete } from "@mui/material";
 import { useFetch } from "../customHooks/useFetch";
@@ -22,7 +22,7 @@ export default function AnimeInput() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const { data, loading } = useFetch(
+  const { data } = useFetch(
     `https://api.jikan.moe/v4/anime?page=${currentPage}&q=${searchQuery}`
   );
 
@@ -41,6 +41,7 @@ export default function AnimeInput() {
   const handleSelectChange = (event, value) => {
     if (value) {
       setInput(value);
+      dispatch(setSelectedAnimeId(value.mal_id));
     }
   };
 
@@ -93,7 +94,8 @@ export default function AnimeInput() {
         renderInput={(params) => <TextField {...params} label="Cerca Anime" />}
         renderOption={(props, option) => (
           <li {...props} key={option.mal_id}>
-            <strong>{option.title_english || option.title}</strong>
+            <strong>{option.title_english || option.title}</strong> (
+            {option.mal_id})
           </li>
         )}
       />
@@ -127,7 +129,6 @@ export default function AnimeInput() {
             : "Scrivi qualcosa per aggiungere..."}
         </span>
       </div>
-      {error && <p className="text-red-600 mt-2">{error}</p>}
       <SnackBar
         open={open}
         duration={5000}

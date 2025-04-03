@@ -44,12 +44,17 @@ export const addAnimeAsync = createAsyncThunk(
 const animeSlice = createSlice({
   name: "anime",
   initialState: {
+    selectedAnimeId: null,
     data: [],
     loading: false,
     error: null,
     count: 0,
   },
-  reducers: {},
+  reducers: {
+    setSelectedAnimeId: (state, action) => {
+      state.selectedAnimeId = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAnimeAsync.pending, (state) => {
@@ -109,5 +114,7 @@ const animeSlice = createSlice({
       });
   },
 });
+
+export const { setSelectedAnimeId } = animeSlice.actions;
 
 export default animeSlice.reducer;
