@@ -28,7 +28,7 @@ import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MangaListInput from "./MangaListInput";
 import { deleteMangaAsync, getMangaAsync } from "./mangaSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Loading from "../infoComponents/Loading";
 import Error from "../infoComponents/Error";
 import NoData from "../infoComponents/NoData";
@@ -201,22 +201,31 @@ export default function MangaList() {
   const { data, loading, error } = useSelector((state) => state.manga);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("title");
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getMangaAsync());
   }, [dispatch]);
 
-  {
-    loading && <Loading />;
-  }
+  const handleSort = () => {
+    setOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+  };
 
-  {
-    error && <Error error={error} />;
-  }
+  const sortedData = useMemo(() => {
+    if (!data) return [];
+    return [...data].sort((a, b) => {
+      if (order === "asc") {
+        return a[orderBy].localeCompare(b[orderBy]);
+      } else {
+        return b[orderBy].localeCompare(a[orderBy]);
+      }
+    });
+  }, [data, order, orderBy]);
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedData.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -243,11 +252,8 @@ export default function MangaList() {
         <MangaListInput />
       </div>
       <div className="w-[50%]">
-        {data.length != 0 ? (
-          <TableContainer
-            component={Paper}
-            /* sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }} */
-          >
+        {data.length !== 0 ? (
+          <TableContainer component={Paper}>
             <Table
               aria-label="collapsible table"
               size={width <= 1272 ? "small" : "medium"}
@@ -255,9 +261,12 @@ export default function MangaList() {
               <TableHead>
                 <TableRow sx={{ backgroundColor: "black" }}>
                   <TableCell />
-                  <TableCell sx={{ color: "white" }}>
+                  <TableCell
+                    sx={{ color: "white", cursor: "pointer" }}
+                    onClick={handleSort}
+                  >
                     <Typography variant="h6" gutterBottom component="div">
-                      Titolo
+                      Titolo {order === "asc" ? "▲" : "▼"}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ color: "white" }} align="right">
@@ -279,11 +288,11 @@ export default function MangaList() {
               </TableHead>
               <TableBody>
                 {(rowsPerPage > 0
-                  ? data.slice(
+                  ? sortedData.slice(
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage
                     )
-                  : data
+                  : sortedData
                 ).map((row) => (
                   <Row key={row.id} row={row} />
                 ))}
@@ -306,7 +315,7 @@ export default function MangaList() {
                       ``;
                     }}
                     colSpan={3}
-                    count={data.length}
+                    count={sortedData.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     slotProps={{
