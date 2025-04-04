@@ -38,6 +38,15 @@ export default function DeleteConfirm({
               <u>NON</u>
             </strong>{" "}
             sarà possibile tornare indietro!
+            {typeof value.author === "string" && (
+              <p>
+                Eliminando il manga perderai{" "}
+                <strong>
+                  <u>TUTTI</u>
+                </strong>{" "}
+                {""}i volumi ad esso associati
+              </p>
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

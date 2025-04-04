@@ -50,22 +50,25 @@ const headCells = [
     boolean: false,
     disablePadding: true,
     label: "Titolo",
+    sortable: true,
   },
   {
     id: "completed",
     boolean: true,
     disablePadding: false,
     label: "Completata",
+    sortable: true,
   },
   {
     id: "delete",
     boolean: true,
     label: "Elimina",
+    sortable: false,
   },
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, rowCount, onRequestSort } = props;
+  const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -81,18 +84,24 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.sortable ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : "asc"}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            ) : (
+              headCell.label
+            )}
           </TableCell>
         ))}
       </TableRow>

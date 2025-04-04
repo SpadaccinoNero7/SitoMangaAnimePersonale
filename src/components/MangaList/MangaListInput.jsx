@@ -18,7 +18,7 @@ export default function MangaListInput() {
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [open, setOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null); // Nuovo stato per il valore selezionato
+  const [selectedOption, setSelectedOption] = useState(null);
   const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,14 +42,14 @@ export default function MangaListInput() {
   };
 
   const handleSelectChange = (event, value) => {
-    setSelectedOption(value); // Aggiorna lo stato con l'opzione selezionata
+    setSelectedOption(value);
     if (value) {
-      setInputTitle(value.title_english || value.title || ""); // Aggiorna il titolo
+      setInputTitle(value.title_english || value.title || "");
       const oldAuthor = value?.authors?.[0]?.name || "";
-      setInputAuthor(oldAuthor.replace(/,/g, "")); // Aggiorna l'autore
+      setInputAuthor(oldAuthor.replace(/,/g, ""));
     } else {
-      setInputTitle(""); // Resetta il titolo se non c'è una selezione
-      setInputAuthor(""); // Resetta l'autore
+      setInputTitle("");
+      setInputAuthor("");
     }
   };
 
@@ -86,7 +86,7 @@ export default function MangaListInput() {
         completed: checkCompleted,
       })
     );
-    setInputTitle("");
+    setSelectedOption("");
     setInputAuthor("");
     setCheckCompleted(false);
     setOpen(true);
@@ -96,20 +96,11 @@ export default function MangaListInput() {
     if (reason === "clickaway") {
       return;
     }
-
     setOpen(false);
   };
 
   return (
     <div className="bg-red-400 w-fit p-4">
-      {/* <TextField
-        label="Titolo"
-        variant="outlined"
-        placeholder="Inserisci il titolo"
-        onChange={(e) => setInputTitle(e.target.value)}
-        value={inputTitle}
-        margin="dense"
-      /> */}
       <Autocomplete
         autoHighlight
         openText="Apri"
@@ -159,26 +150,6 @@ export default function MangaListInput() {
           }}
         />
       </Tooltip>
-      {/* <TextField
-        value={inputAuthor}
-        placeholder="L'autore viene aggiunto in automatico"
-        readOnly
-        multiline
-        InputProps={{
-          style: {
-            backgroundColor: "green",
-            color: "white",
-          },
-        }}
-      /> */}
-      {/* <TextField
-        label="Autore"
-        variant="outlined"
-        placeholder="Inserisci l'autore"
-        value={inputAuthor}
-        margin="dense"
-        onChange={(e) => setInputAuthor(e.target.value)}
-      /> */}
       <div className="tooltip">
         {checkCompleted ? (
           <CheckBoxIcon
