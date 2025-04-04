@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -27,13 +26,11 @@ import LastPageIcon from "@mui/icons-material/LastPage";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import MangaListInput from "./MangaListInput";
-import { deleteMangaAsync, getMangaAsync } from "./mangaSlice";
+import { deleteMangaAsync, getMangaAsync, putMangaAsync } from "./mangaSlice";
 import { useEffect, useMemo, useState } from "react";
-import Loading from "../infoComponents/Loading";
-import Error from "../infoComponents/Error";
 import NoData from "../infoComponents/NoData";
-import MangaListPut from "./MangaListPut";
 import DeleteConfirm from "../infoComponents/DeleteConfirm";
+import ChangeCompleteStatus from "../infoComponents/ChangeCompleteStatus";
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -123,6 +120,24 @@ function Row(props) {
     setOpen(null);
   };
 
+  const toggleEditMode = (id) => {
+    setEditModes((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const handlePutComplete = (id, title, author, value) => {
+    dispatch(
+      putMangaAsync({
+        id: id,
+        title: title,
+        author: author,
+        completed: value,
+      })
+    );
+  };
+
   return (
     <>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -136,14 +151,23 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row" sx={{ color: "red" }}>
-          <Typography sx={{ fontWeight: "bold" }}>
-            {editModes ? <MangaListPut manga={row} /> : `${row.title}`}
-          </Typography>
+          <Typography sx={{ fontWeight: "bold" }}>{row.title}</Typography>
         </TableCell>
         <TableCell align="right">
           <Typography sx={{ fontWeight: "bold" }}>{row.author}</Typography>
         </TableCell>
         <TableCell align="right">
+          {editModes && (
+            <ChangeCompleteStatus
+              value={row}
+              handleClose={() => toggleEditMode(row.id)}
+              open={editModes[row.id]}
+              handleAccept={(newValue) => {
+                handlePutComplete(row.id, row.title, row.author, newValue);
+                toggleEditMode(row.id);
+              }}
+            />
+          )}
           {row.completed ? (
             <CheckIcon color="success" />
           ) : (
@@ -169,11 +193,26 @@ function Row(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={openDetails} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Link to={`/singleManga/${row.id}`}>
-                <Typography variant="h6" gutterBottom component="div">
-                  Dettaglio
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Link
+                  to={`/singleManga/${row.id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Dettaglio
+                  </Typography>
+                </Link>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  onClick={() => toggleEditMode(row.id)}
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                >
+                  {editModes[row.id] ? "Modifica in corso..." : "Modifica"}
                 </Typography>
-              </Link>
+              </Box>
               <Table size="small" aria-label="purchases"></Table>
             </Box>
           </Collapse>

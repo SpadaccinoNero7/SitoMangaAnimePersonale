@@ -21,12 +21,13 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AnimeInput from "./AnimeInput";
 import AnimePut from "./AnimePut";
-import { deleteAnimeAsync, getAnimeAsync } from "./animeSlice";
+import { deleteAnimeAsync, getAnimeAsync, putAnimeAsync } from "./animeSlice";
 import Loading from "../infoComponents/Loading";
 import Error from "../infoComponents/Error";
 import NoData from "../infoComponents/NoData";
 import DeleteConfirm from "../infoComponents/DeleteConfirm";
 import AnimePutGrande from "./AnimePutGrande";
+import ChangeCompleteStatus from "../infoComponents/ChangeCompleteStatus";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -141,6 +142,16 @@ export default function AnimeList() {
 
   const { data, loading, error } = useSelector((state) => state.anime);
 
+  const handlePutComplete = (id, title, value) => {
+    dispatch(
+      putAnimeAsync({
+        id: id,
+        title: title,
+        completed: value,
+      })
+    );
+  };
+
   useEffect(() => {
     dispatch(getAnimeAsync());
   }, [dispatch]);
@@ -226,7 +237,7 @@ export default function AnimeList() {
                             key={anime.id}
                           >
                             <TableCell padding="checkbox">
-                              {/* {!isEditMode ? (
+                              {!isEditMode ? (
                                 <EditIcon
                                   onClick={() => {
                                     toggleEditMode(anime.id);
@@ -238,7 +249,7 @@ export default function AnimeList() {
                                     toggleEditMode(anime.id);
                                   }}
                                 />
-                              )} */}
+                              )}
                             </TableCell>
                             <TableCell
                               component="th"
@@ -247,11 +258,22 @@ export default function AnimeList() {
                               padding="none"
                             >
                               {isEditMode ? (
-                                <AnimePutGrande
-                                  anime={anime}
-                                  handleClose={handleClose}
-                                  open={true}
-                                />
+                                <>
+                                  <ChangeCompleteStatus
+                                    value={anime}
+                                    handleClose={() => toggleEditMode(anime.id)}
+                                    open={isEditMode}
+                                    handleAccept={(newValue) => {
+                                      handlePutComplete(
+                                        anime.id,
+                                        anime.title,
+                                        newValue
+                                      );
+                                      toggleEditMode(anime.id);
+                                    }}
+                                  />
+                                  <strong>Modifica in corso...</strong>
+                                </>
                               ) : (
                                 `${anime.title}`
                               )}
