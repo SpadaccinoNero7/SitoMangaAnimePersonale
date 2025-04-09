@@ -29,7 +29,12 @@ export default function DeleteConfirm({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          Vuoi davvero cancellare <strong>{value.title}</strong> ?
+          Vuoi davvero cancellare{" "}
+          <strong>
+            {value.title}{" "}
+            {typeof value.volumes === "number" && `il volume ${value.volumes}`}
+          </strong>{" "}
+          ?
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

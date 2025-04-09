@@ -11,7 +11,6 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  Switch,
 } from "@mui/material";
 import SnackBar from "../infoComponents/SnackBarComponent";
 

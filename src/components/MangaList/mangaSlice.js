@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import URL_PORT from "../infoComponents/port";
 
 export const getMangaAsync = createAsyncThunk(
   "manga/getMangaAsync",
   async () => {
-    const response = await axios.get("http://localhost:8080/manga/manga");
+    const response = await axios.get(`${URL_PORT}/manga/manga`);
     return response.data;
   }
 );
@@ -12,8 +13,8 @@ export const getMangaAsync = createAsyncThunk(
 export const putMangaAsync = createAsyncThunk(
   "manga/putMangaAsync",
   async (payload) => {
-    const response = await axios.put("http://localhost:8080/manga/manga", {
-      id: 0,
+    const response = await axios.put(`${URL_PORT}/manga/manga`, {
+      id: payload.id,
       title: payload.title,
       author: payload.author,
       completed: payload.completed,
@@ -25,7 +26,7 @@ export const putMangaAsync = createAsyncThunk(
 export const deleteMangaAsync = createAsyncThunk(
   "manga/deleteMangaAsync",
   async (id) => {
-    await axios.delete(`http://localhost:8080/manga/manga/${id}`);
+    await axios.delete(`${URL_PORT}/manga/manga/${id}`);
     return id;
   }
 );
@@ -33,7 +34,7 @@ export const deleteMangaAsync = createAsyncThunk(
 export const addMangaAsync = createAsyncThunk(
   "manga/addMangaAsync",
   async (payload) => {
-    const response = await axios.post("http://localhost:8080/manga/manga", {
+    const response = await axios.post(`${URL_PORT}/manga/manga`, {
       id: 0,
       title: payload.title,
       author: payload.author,
@@ -95,17 +96,19 @@ const mangaSlice = createSlice({
       .addCase(putMangaAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
-        console.log("modifica in corso");
       })
       .addCase(putMangaAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.data.push(action.payload);
-        console.log("modifica effettuata correttamente");
+        const index = state.data.findIndex(
+          (manga) => manga.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.data[index] = action.payload;
+        }
       })
       .addCase(putMangaAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-        console.log(`errore`);
       });
   },
 });

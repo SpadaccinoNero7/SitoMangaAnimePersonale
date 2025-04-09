@@ -1,4 +1,6 @@
 import PropTypes from "prop-types";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -19,10 +21,13 @@ import { Link, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MangaListDettagliataInput from "./MangaListDettagliataInput";
 import { useDispatch, useSelector } from "react-redux";
-import { getMangaAsync } from "./mangaSlice";
+import { deleteMangaAsync, getMangaAsync, putMangaAsync } from "./mangaSlice";
 import { useEffect, useMemo, useState } from "react";
 import Loading from "../infoComponents/Loading";
 import NoData from "../infoComponents/NoData";
+import MangaDettaglioPut from "./MangaDettaglioPut";
+import { putMangaDettaglioAsync } from "./mangaDettaglioSlice";
+import TotalPriceMangaDettaglio from "../infoComponents/TotalPriceMangaDettaglio";
 
 /* function createData(id, volumes, date, price) {
   return {
@@ -175,6 +180,30 @@ export default function MangaListDettagliata() {
   const [page, setPage] = useState(0);
   const [rowsPerPage] = useState(5);
 
+  const [editModes, setEditModes] = useState([]);
+
+  const [open, setOpen] = useState(null);
+
+  const handleOpen = (id) => {
+    setOpen(id);
+  };
+
+  const handleClose = () => {
+    setOpen(null);
+  };
+
+  const handleAccept = (id) => {
+    dispatch(deleteMangaAsync(id));
+    setOpen(null);
+  };
+
+  const toggleEditMode = (id) => {
+    setEditModes((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   /*   const { data } = useFetch("http://localhost:8080/manga/manga");
   const mangaId = data ? Number(params.mangaId) : null;
   
@@ -199,6 +228,17 @@ export default function MangaListDettagliata() {
     setOrderBy(property);
   };
 
+  const handlePutComplete = (id, volumes, dateValue, priceValue) => {
+    dispatch(
+      putMangaDettaglioAsync({
+        id: id,
+        volumes: volumes,
+        date: dateValue,
+        price: priceValue,
+      })
+    );
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -219,94 +259,141 @@ export default function MangaListDettagliata() {
   );
 
   return (
-    <div
-      className="h-screen bg-cover bg-center flex items-center justify-between"
-      style={{
-        backgroundImage:
-          mangaDetails && mangaDetails.length > 0
-            ? "url(/assets/wallpaper-sitopersonale-manga.jpg)"
-            : "url(/assets/marin.jpg)",
-      }}
-    >
-      <div>
-        <MangaListDettagliataInput manga={manga} />
-      </div>
-      <Box sx={{ width: "50%" }}>
-        {mangaDetails.length != 0 ? (
-          <Paper sx={{ width: "50%" }}>
-            <EnhancedTableToolbar />
-            <TableContainer>
-              <Table
-                sx={{ minWidth: 400 }}
-                aria-labelledby="tableTitle"
-                size={"medium"}
-              >
-                <EnhancedTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                  rowCount={mangaDetails ? mangaDetails.length : 0}
-                />
-                <TableBody>
-                  {visibleRows.map((manga, index) => {
-                    const labelId = `enhanced-table-checkbox-${index}`;
+    <>
+      <div
+        className="h-screen bg-cover bg-center flex items-center justify-between"
+        style={{
+          backgroundImage:
+            mangaDetails && mangaDetails.length > 0
+              ? "url(/assets/wallpaper-sitopersonale-manga.jpg)"
+              : "url(/assets/marin.jpg)",
+        }}
+      >
+        <div>
+          <MangaListDettagliataInput manga={manga} />
+        </div>
+        <div className="flex flex-col w-[100%] items-center">
+          <Box sx={{ width: "50%" }}>
+            {mangaDetails.length != 0 ? (
+              <Paper sx={{ width: "50%" }}>
+                <EnhancedTableToolbar />
+                <TableContainer>
+                  <Table
+                    sx={{ minWidth: 400 }}
+                    aria-labelledby="tableTitle"
+                    size={"medium"}
+                  >
+                    <EnhancedTableHead
+                      order={order}
+                      orderBy={orderBy}
+                      onRequestSort={handleRequestSort}
+                      rowCount={mangaDetails ? mangaDetails.length : 0}
+                    />
+                    <TableBody>
+                      {visibleRows.map((manga, index) => {
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        const isEditMode = editModes[manga.id] || false;
 
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, manga.id)}
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={manga.volumes}
-                      >
-                        <TableCell padding="checkbox"></TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
+                        return (
+                          <>
+                            <TableRow
+                              hover
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={manga.volumes}
+                            >
+                              <TableCell padding="checkbox">
+                                {!isEditMode ? (
+                                  <EditIcon
+                                    onClick={() => {
+                                      toggleEditMode(manga.id);
+                                    }}
+                                  />
+                                ) : (
+                                  <CheckIcon
+                                    onClick={() => {
+                                      toggleEditMode(manga.id);
+                                    }}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell
+                                component="th"
+                                id={labelId}
+                                scope="row"
+                                padding="none"
+                              >
+                                {isEditMode ? (
+                                  <>
+                                    <MangaDettaglioPut
+                                      manga={manga}
+                                      handleClose={() =>
+                                        toggleEditMode(manga.id)
+                                      }
+                                      open={isEditMode}
+                                      handleAccept={(dateValue, priceValue) => {
+                                        handlePutComplete(
+                                          manga.id,
+                                          manga.volumes,
+                                          dateValue,
+                                          priceValue
+                                        );
+                                        toggleEditMode(manga.id);
+                                      }}
+                                    />
+                                    <strong>Modifica in corso...</strong>
+                                  </>
+                                ) : (
+                                  `${manga.volumes}`
+                                )}
+                              </TableCell>
+                              <TableCell align="center">{manga.date}</TableCell>
+                              <TableCell align="center">
+                                {manga.price}
+                              </TableCell>
+                            </TableRow>
+                          </>
+                        );
+                      })}
+                      {emptyRows > 0 && (
+                        <TableRow
+                          style={{
+                            height: 33 * emptyRows,
+                          }}
                         >
-                          {manga.volumes}
-                        </TableCell>
-                        <TableCell align="center">{manga.date}</TableCell>
-                        <TableCell align="center">{manga.price}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow
-                      style={{
-                        height: 33 * emptyRows,
-                      }}
-                    >
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <div className="flex justify-between items-center">
-              <Link to="/mangalist" className="ml-10">
-                <ArrowBackIcon />
-              </Link>
-              <TablePagination
-                component="div"
-                labelDisplayedRows={() => {
-                  ``;
-                }}
-                count={mangaDetails ? mangaDetails.length : 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPageOptions={[]}
-              />
-            </div>
-          </Paper>
-        ) : (
-          <NoData variant={"black"} />
-        )}
-      </Box>
-    </div>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div className="flex justify-between items-center">
+                  <Link to="/mangalist" className="ml-10">
+                    <ArrowBackIcon />
+                  </Link>
+                  <TablePagination
+                    component="div"
+                    labelDisplayedRows={() => {
+                      ``;
+                    }}
+                    count={mangaDetails ? mangaDetails.length : 0}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPageOptions={[]}
+                  />
+                </div>
+              </Paper>
+            ) : (
+              <NoData variant={"black"} />
+            )}
+          </Box>
+          <div>
+            <TotalPriceMangaDettaglio />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

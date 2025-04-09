@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import URL_PORT from "../infoComponents/port";
 
 export const getAnimeAsync = createAsyncThunk(
   "anime/getAnimeAsync",
   async () => {
-    const response = await axios.get("http://localhost:8080/anime/anime");
+    const response = await axios.get(`${URL_PORT}/anime/anime`);
     return response.data;
   }
 );
@@ -12,7 +13,7 @@ export const getAnimeAsync = createAsyncThunk(
 export const putAnimeAsync = createAsyncThunk(
   "anime/putAnimeAsync",
   async (payload) => {
-    const response = await axios.put("http://localhost:8080/anime/anime", {
+    const response = await axios.put(`${URL_PORT}/anime/anime`, {
       id: payload.id,
       title: payload.title,
       completed: payload.completed,
@@ -24,7 +25,7 @@ export const putAnimeAsync = createAsyncThunk(
 export const deleteAnimeAsync = createAsyncThunk(
   "anime/deleteAnimeAsync",
   async (id) => {
-    await axios.delete(`http://localhost:8080/anime/anime/${id}`);
+    await axios.delete(`${URL_PORT}/anime/anime/${id}`);
     return id;
   }
 );
@@ -32,7 +33,7 @@ export const deleteAnimeAsync = createAsyncThunk(
 export const addAnimeAsync = createAsyncThunk(
   "anime/addAnimeAsync",
   async (payload) => {
-    const response = await axios.post("http://localhost:8080/anime/anime", {
+    const response = await axios.post(`${URL_PORT}/anime/anime`, {
       id: 0,
       title: payload.title,
       completed: payload.completed,
@@ -105,7 +106,7 @@ const animeSlice = createSlice({
           (anime) => anime.id === action.payload.id
         );
         if (index !== -1) {
-          state.data[index] = action.payload; // Aggiorna l'elemento esistente
+          state.data[index] = action.payload;
         }
       })
       .addCase(putAnimeAsync.rejected, (state, action) => {
