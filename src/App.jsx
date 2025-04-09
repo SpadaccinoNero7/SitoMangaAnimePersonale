@@ -1,11 +1,20 @@
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getAnimeAsync } from "./components/AnimeList/animeSlice";
+import { getMangaAsync } from "./components/MangaList/mangaSlice";
 
 function App() {
   const anime = useSelector((state) => state.anime.data);
   const manga = useSelector((state) => state.manga.data);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAnimeAsync());
+    dispatch(getMangaAsync());
+  }, []);
 
   return (
     <div className="flex flex-col justify-around bg-black h-[100vh] w-[100vw] text-white">
