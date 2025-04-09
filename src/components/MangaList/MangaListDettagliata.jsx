@@ -27,7 +27,6 @@ import Loading from "../infoComponents/Loading";
 import NoData from "../infoComponents/NoData";
 import MangaDettaglioPut from "./MangaDettaglioPut";
 import { putMangaDettaglioAsync } from "./mangaDettaglioSlice";
-import TotalPriceMangaDettaglio from "../infoComponents/TotalPriceMangaDettaglio";
 
 /* function createData(id, volumes, date, price) {
   return {
@@ -71,7 +70,7 @@ const headCells = [
     id: "price",
     numeric: false,
     disablePadding: false,
-    label: "Prezzo",
+    label: "Prezzo (€)",
   },
 ];
 
@@ -150,7 +149,12 @@ function EnhancedTableToolbar(props) {
       ]}
     >
       <Typography
-        sx={{ flex: "1 1 100%", backgroundColor: "black", color: "white" }}
+        sx={{
+          flex: "1",
+          borderRadius: 10,
+          backgroundColor: "black",
+          color: "white",
+        }}
         variant="h6"
         id="tableTitle"
         component="div"
@@ -257,10 +261,6 @@ export default function MangaListDettagliata() {
         : [],
     [order, orderBy, page, rowsPerPage, mangaDetails]
   );
-
-  function ccyFormat(num) {
-    return `${num.toFixed(2)}`;
-  }
 
   function total(items) {
     return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
@@ -369,19 +369,20 @@ export default function MangaListDettagliata() {
                         <TableCell colSpan={6} />
                       </TableRow>
                     )}
-                    <TableRow>
-                      <TableCell colSpan={2}>Totale</TableCell>
-                      <TableCell align="right">
-                        {ccyFormat(invoiceTotal)}
-                      </TableCell>
-                    </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
-              <div className="flex justify-between items-center">
-                <Link to="/mangalist" className="ml-10">
-                  <ArrowBackIcon />
-                </Link>
+              <div className="flex justify-between items-center w-auto">
+                <div>
+                  <Link to="/mangalist" className="ml-10">
+                    <ArrowBackIcon />
+                  </Link>
+                </div>
+                <div className="bg-black">
+                  <div className="text-white">
+                    Totale {invoiceTotal.toFixed(2)} €
+                  </div>
+                </div>
                 <TablePagination
                   component="div"
                   labelDisplayedRows={() => {
