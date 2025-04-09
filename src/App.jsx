@@ -60,8 +60,8 @@ function App() {
             </Link>
           </div>
         </div>
-        <div className="bg-cover bg-center w-full m-[5%] relative group">
-          <div>
+        {/*<div className="bg-cover bg-center w-full m-[5%] relative group">
+           <div>
             <Tooltip
               title={`Manga in lista: ${manga}`}
               slotProps={{
@@ -95,8 +95,8 @@ function App() {
                 </Box>
               </Tooltip>
             </Tooltip>
-          </div>
-        </div>
+          </div> 
+        </div>*/}
       </div>
     </div>
   );
