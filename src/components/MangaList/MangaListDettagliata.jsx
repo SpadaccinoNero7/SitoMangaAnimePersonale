@@ -258,6 +258,16 @@ export default function MangaListDettagliata() {
     [order, orderBy, page, rowsPerPage, mangaDetails]
   );
 
+  function ccyFormat(num) {
+    return `${num.toFixed(2)}`;
+  }
+
+  function total(items) {
+    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+  }
+
+  const invoiceTotal = total(mangaDetails);
+
   return (
     <>
       <div
@@ -272,126 +282,123 @@ export default function MangaListDettagliata() {
         <div>
           <MangaListDettagliataInput manga={manga} />
         </div>
-        <div className="flex flex-col w-[100%] items-center">
-          <Box sx={{ width: "50%" }}>
-            {mangaDetails.length != 0 ? (
-              <Paper sx={{ width: "50%" }}>
-                <EnhancedTableToolbar />
-                <TableContainer>
-                  <Table
-                    sx={{ minWidth: 400 }}
-                    aria-labelledby="tableTitle"
-                    size={"medium"}
-                  >
-                    <EnhancedTableHead
-                      order={order}
-                      orderBy={orderBy}
-                      onRequestSort={handleRequestSort}
-                      rowCount={mangaDetails ? mangaDetails.length : 0}
-                    />
-                    <TableBody>
-                      {visibleRows.map((manga, index) => {
-                        const labelId = `enhanced-table-checkbox-${index}`;
-                        const isEditMode = editModes[manga.id] || false;
-
-                        return (
-                          <>
-                            <TableRow
-                              hover
-                              role="checkbox"
-                              tabIndex={-1}
-                              key={manga.volumes}
-                            >
-                              <TableCell padding="checkbox">
-                                {!isEditMode ? (
-                                  <EditIcon
-                                    onClick={() => {
-                                      toggleEditMode(manga.id);
-                                    }}
-                                  />
-                                ) : (
-                                  <CheckIcon
-                                    onClick={() => {
-                                      toggleEditMode(manga.id);
-                                    }}
-                                  />
-                                )}
-                              </TableCell>
-                              <TableCell
-                                component="th"
-                                id={labelId}
-                                scope="row"
-                                padding="none"
-                              >
-                                {isEditMode ? (
-                                  <>
-                                    <MangaDettaglioPut
-                                      manga={manga}
-                                      handleClose={() =>
-                                        toggleEditMode(manga.id)
-                                      }
-                                      open={isEditMode}
-                                      handleAccept={(dateValue, priceValue) => {
-                                        handlePutComplete(
-                                          manga.id,
-                                          manga.volumes,
-                                          dateValue,
-                                          priceValue
-                                        );
-                                        toggleEditMode(manga.id);
-                                      }}
-                                    />
-                                    <strong>Modifica in corso...</strong>
-                                  </>
-                                ) : (
-                                  `${manga.volumes}`
-                                )}
-                              </TableCell>
-                              <TableCell align="center">{manga.date}</TableCell>
-                              <TableCell align="center">
-                                {manga.price}
-                              </TableCell>
-                            </TableRow>
-                          </>
-                        );
-                      })}
-                      {emptyRows > 0 && (
-                        <TableRow
-                          style={{
-                            height: 33 * emptyRows,
-                          }}
-                        >
-                          <TableCell colSpan={6} />
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <div className="flex justify-between items-center">
-                  <Link to="/mangalist" className="ml-10">
-                    <ArrowBackIcon />
-                  </Link>
-                  <TablePagination
-                    component="div"
-                    labelDisplayedRows={() => {
-                      ``;
-                    }}
-                    count={mangaDetails ? mangaDetails.length : 0}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    rowsPerPageOptions={[]}
+        <Box sx={{ width: "50%" }}>
+          {mangaDetails.length != 0 ? (
+            <Paper sx={{ width: "50%" }}>
+              <EnhancedTableToolbar />
+              <TableContainer>
+                <Table
+                  sx={{ minWidth: 400 }}
+                  aria-labelledby="tableTitle"
+                  size={"medium"}
+                >
+                  <EnhancedTableHead
+                    order={order}
+                    orderBy={orderBy}
+                    onRequestSort={handleRequestSort}
+                    rowCount={mangaDetails ? mangaDetails.length : 0}
                   />
-                </div>
-              </Paper>
-            ) : (
-              <NoData variant={"black"} />
-            )}
-          </Box>
-          <div>
-            <TotalPriceMangaDettaglio />
-          </div>
-        </div>
+                  <TableBody>
+                    {visibleRows.map((manga, index) => {
+                      const labelId = `enhanced-table-checkbox-${index}`;
+                      const isEditMode = editModes[manga.id] || false;
+
+                      return (
+                        <>
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={manga.volumes}
+                          >
+                            <TableCell padding="checkbox">
+                              {!isEditMode ? (
+                                <EditIcon
+                                  onClick={() => {
+                                    toggleEditMode(manga.id);
+                                  }}
+                                />
+                              ) : (
+                                <CheckIcon
+                                  onClick={() => {
+                                    toggleEditMode(manga.id);
+                                  }}
+                                />
+                              )}
+                            </TableCell>
+                            <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none"
+                            >
+                              {isEditMode ? (
+                                <>
+                                  <MangaDettaglioPut
+                                    manga={manga}
+                                    handleClose={() => toggleEditMode(manga.id)}
+                                    open={isEditMode}
+                                    handleAccept={(dateValue, priceValue) => {
+                                      handlePutComplete(
+                                        manga.id,
+                                        manga.volumes,
+                                        dateValue,
+                                        priceValue
+                                      );
+                                      toggleEditMode(manga.id);
+                                    }}
+                                  />
+                                  <strong>Modifica in corso...</strong>
+                                </>
+                              ) : (
+                                `${manga.volumes}`
+                              )}
+                            </TableCell>
+                            <TableCell align="center">{manga.date}</TableCell>
+                            <TableCell align="center">{manga.price}</TableCell>
+                          </TableRow>
+                        </>
+                      );
+                    })}
+                    {emptyRows > 0 && (
+                      <TableRow
+                        style={{
+                          height: 33 * emptyRows,
+                        }}
+                      >
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                    <TableRow>
+                      <TableCell colSpan={2}>Totale</TableCell>
+                      <TableCell align="right">
+                        {ccyFormat(invoiceTotal)}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <div className="flex justify-between items-center">
+                <Link to="/mangalist" className="ml-10">
+                  <ArrowBackIcon />
+                </Link>
+                <TablePagination
+                  component="div"
+                  labelDisplayedRows={() => {
+                    ``;
+                  }}
+                  count={mangaDetails ? mangaDetails.length : 0}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPageOptions={[]}
+                />
+              </div>
+            </Paper>
+          ) : (
+            <NoData variant={"black"} />
+          )}
+        </Box>
       </div>
     </>
   );
