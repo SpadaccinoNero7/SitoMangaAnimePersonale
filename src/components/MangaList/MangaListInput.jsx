@@ -4,7 +4,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addMangaAsync } from "./mangaSlice";
 import TextField from "@mui/material/TextField";
 import SnackBar from "../infoComponents/SnackBarComponent";
@@ -18,6 +18,7 @@ export default function MangaListInput() {
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openWarningSameTitle, setOpenWarningSameTitle] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const dispatch = useDispatch();
 
@@ -26,6 +27,9 @@ export default function MangaListInput() {
   const { data } = useFetch(
     `https://api.jikan.moe/v4/manga?page=${currentPage}&q=${searchQuery}`
   );
+
+  const mangaTotal = useSelector((state) => state.manga.data);
+  const x = mangaTotal.map((el) => el.title);
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
@@ -77,6 +81,12 @@ export default function MangaListInput() {
       setError("L'autore deve essere aggiunto");
       return;
     } */
+    if (x.find((el) => el === inputTitle)) {
+      setOpenWarningSameTitle(true);
+      setSelectedOption("");
+      setInputAuthor("");
+      return;
+    }
 
     setError(null);
     dispatch(
@@ -90,6 +100,7 @@ export default function MangaListInput() {
     setInputAuthor("");
     setCheckCompleted(false);
     setOpen(true);
+    setOpenWarningSameTitle(true);
   };
 
   const handleClose = (event, reason) => {
@@ -97,6 +108,7 @@ export default function MangaListInput() {
       return;
     }
     setOpen(false);
+    setOpenWarningSameTitle(false);
   };
 
   return (
@@ -187,6 +199,13 @@ export default function MangaListInput() {
         close={handleClose}
         severity={"success"}
         text={"Aggiunto con successo!"}
+      />
+      <SnackBar
+        open={openWarningSameTitle}
+        duration={3000}
+        close={handleClose}
+        severity={"warning"}
+        text={"Il titolo aggiunto è già presente nella lista!"}
       />
     </div>
   );
