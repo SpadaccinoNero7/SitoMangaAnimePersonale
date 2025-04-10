@@ -263,7 +263,7 @@ export default function MangaListDettagliata() {
   );
 
   function total(items) {
-    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+    return items?.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
   }
 
   const invoiceTotal = total(mangaDetails);
@@ -283,7 +283,7 @@ export default function MangaListDettagliata() {
           <MangaListDettagliataInput manga={manga} />
         </div>
         <Box sx={{ width: "50%" }}>
-          {mangaDetails.length != 0 ? (
+          {mangaDetails?.length != 0 ? (
             <Paper sx={{ width: "50%" }}>
               <EnhancedTableToolbar />
               <TableContainer>
@@ -380,7 +380,7 @@ export default function MangaListDettagliata() {
                 </div>
                 <div className="bg-black">
                   <div className="text-white">
-                    Totale {invoiceTotal.toFixed(2)} €
+                    Totale {invoiceTotal?.toFixed(2)} €
                   </div>
                 </div>
                 <TablePagination
