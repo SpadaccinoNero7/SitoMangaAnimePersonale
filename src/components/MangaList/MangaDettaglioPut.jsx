@@ -20,7 +20,9 @@ export default function MangaDettaglioPut({
   handleClose,
   handleAccept,
 }) {
-  const [newDate, setNewDate] = useState(dayjs());
+  const [newDate, setNewDate] = useState(
+    dayjs(manga.date).isValid() ? dayjs(manga.date) : dayjs()
+  );
   const [newPrice, setNewPrice] = useState(manga.price);
   const dispatch = useDispatch();
   const [newOpen, setNewOpen] = useState(null);
@@ -40,23 +42,29 @@ export default function MangaDettaglioPut({
   return (
     <>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>
-          Stai modificando il volume {manga.volumes} di {manga.title}
-        </DialogTitle>
+        <DialogTitle>Stai modificando il volume {manga.volumes}</DialogTitle>
         <DialogContent>
+          <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Scegli la nuova data"
               format="YYYY/M/D"
               value={newDate}
-              onChange={(newValue) => setNewDate(newValue)}
+              onChange={(newValue) => {
+                if (dayjs(newValue).isValid()) {
+                  setNewDate(newValue);
+                }
+              }}
             />
           </LocalizationProvider>
+          <p>Prezzo</p>
           <input
             type="number"
             min={1}
+            step={0.1}
             value={newPrice}
             onChange={(e) => setNewPrice(Number(e.target.value))}
+            className="p-2 border rounded"
           />
         </DialogContent>
         <DialogActions>
