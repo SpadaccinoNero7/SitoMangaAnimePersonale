@@ -9,7 +9,7 @@ import { addMangaAsync } from "./mangaSlice";
 import TextField from "@mui/material/TextField";
 import SnackBar from "../infoComponents/SnackBarComponent";
 import { useFetch } from "../customHooks/useFetch";
-import { Autocomplete, Fade, Tooltip, Zoom } from "@mui/material";
+import { Autocomplete, Tooltip, Zoom } from "@mui/material";
 
 export default function MangaListInput() {
   const [inputTitle, setInputTitle] = useState("");
@@ -74,13 +74,6 @@ export default function MangaListInput() {
   }, [inputTitle, inputAuthor]);
 
   const handleAdd = () => {
-    /* if (!inputTitle.trim()) {
-      setError("Il titolo non può essere vuoto.");
-      return;
-    } else if (!inputAuthor.trim()) {
-      setError("L'autore deve essere aggiunto");
-      return;
-    } */
     if (x.find((el) => el === inputTitle)) {
       setOpenWarningSameTitle(true);
       setSelectedOption("");

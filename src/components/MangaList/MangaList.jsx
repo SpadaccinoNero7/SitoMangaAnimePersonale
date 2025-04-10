@@ -216,8 +216,15 @@ function Row(props) {
                 >
                   {editModes[row.id] ? "Modifica in corso..." : "Modifica"}
                 </Typography>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  align="right"
+                  sx={{ width: "100%" }}
+                >
+                  Volumi acquistati:{row.detailsMangas.length}
+                </Typography>
               </Box>
-              <Table size="small" aria-label="purchases"></Table>
             </Box>
           </Collapse>
         </TableCell>
