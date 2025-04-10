@@ -5,7 +5,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BlockIcon from "@mui/icons-material/Block";
 import "./HoverTextCheckbox.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addAnimeAsync, setSelectedAnimeId } from "./animeSlice";
 import SnackBar from "../infoComponents/SnackBarComponent";
 import { Autocomplete } from "@mui/material";
@@ -13,11 +13,11 @@ import { useFetch } from "../customHooks/useFetch";
 
 export default function AnimeInput() {
   const [input, setInput] = useState("");
-  const [error, setError] = useState(null);
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(true);
   const [open, setOpen] = useState(false);
   const [openWarning, setOpenWarning] = useState(false);
+  const [openWarningSameTitle, setOpenWarningSameTitle] = useState(false);
   const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,6 +25,10 @@ export default function AnimeInput() {
   const { data } = useFetch(
     `https://api.jikan.moe/v4/anime?page=${currentPage}&q=${searchQuery}`
   );
+
+  const animeTotal = useSelector((state) => state.anime.data);
+
+  const x = animeTotal.map((el) => el.title);
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
@@ -61,7 +65,11 @@ export default function AnimeInput() {
       setOpenWarning(true);
       return;
     }
-    setError(null);
+    if (x.find((el) => el === animeTitle)) {
+      setOpenWarningSameTitle(true);
+      setInput("");
+      return;
+    }
     dispatch(
       addAnimeAsync({
         title: animeTitle,
@@ -79,6 +87,7 @@ export default function AnimeInput() {
     }
     setOpen(false);
     setOpenWarning(false);
+    setOpenWarningSameTitle(false);
   };
 
   return (
@@ -140,8 +149,15 @@ export default function AnimeInput() {
         open={openWarning}
         duration={5000}
         close={handleClose}
-        severity={"warning"}
+        severity={"error"}
         text={"Il titolo non può essere vuoto!"}
+      />
+      <SnackBar
+        open={openWarningSameTitle}
+        duration={5000}
+        close={handleClose}
+        severity={"warning"}
+        text={"Hai già inserito il titolo scelto!"}
       />
     </div>
   );
