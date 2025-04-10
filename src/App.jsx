@@ -9,6 +9,15 @@ import { getMangaAsync } from "./components/MangaList/mangaSlice";
 function App() {
   const anime = useSelector((state) => state.anime.data);
   const manga = useSelector((state) => state.manga.data);
+  const animeCompleted = [];
+  const x = anime.map((el) => el.completed);
+  const arrayCompletedAnime = x.filter((el) => el === false);
+  animeCompleted.push(arrayCompletedAnime);
+  const mangaCompleted = [];
+  const y = manga.map((el) => el.completed);
+  const arrayCompletedManga = x.filter((el) => el === false);
+  mangaCompleted.push(arrayCompletedManga);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,7 +45,12 @@ function App() {
               <div className="bg-green-500 text-white p-2 rounded">
                 Vai alla sezione Anime!
                 <br />
+                <br />
                 Anime in lista: {anime.length}
+                <br />
+                {arrayCompletedAnime.length > 0
+                  ? `Anime non terminati: ${arrayCompletedAnime.length}`
+                  : "Hai terminato tutti gli anime presenti in lista!"}
               </div>
             </Link>
           </div>
@@ -55,7 +69,12 @@ function App() {
               <div className="bg-green-500 text-white p-2 rounded">
                 Vai alla sezione Manga!
                 <br />
+                <br />
                 Manga in lista: {manga.length}
+                <br />
+                {arrayCompletedManga.length > 0
+                  ? `Manga non terminati: ${arrayCompletedManga.length}`
+                  : "Hai terminato tutti i manga inseriti!"}
               </div>
             </Link>
           </div>

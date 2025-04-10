@@ -3,15 +3,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddIcon from "@mui/icons-material/Add";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
 import { addMangaDettaglioAsync } from "./mangaDettaglioSlice";
 import SnackBar from "../infoComponents/SnackBarComponent";
+import { TextField, Tooltip, Zoom } from "@mui/material";
 
 export default function MangaListDettagliataInput({ manga }) {
-  const [inputVolumes, setInputVolumes] = useState(1);
+  const volume = useRef(1);
   const [inputPrice, setInputPrice] = useState(0);
   const [inputDate, setInputDate] = useState(dayjs());
   const [error, setError] = useState(null);
@@ -19,8 +20,14 @@ export default function MangaListDettagliataInput({ manga }) {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (manga?.detailsMangas) {
+      volume.current = manga.detailsMangas.length + 1;
+    }
+  }, [manga]);
+
   const handleValidation = () => {
-    if (inputVolumes && inputPrice) {
+    if (inputPrice) {
       setIsValid(true);
     } else {
       setIsValid(false);
@@ -29,21 +36,14 @@ export default function MangaListDettagliataInput({ manga }) {
 
   useEffect(() => {
     handleValidation();
-  }, [inputVolumes, inputPrice]);
+  }, [inputPrice]);
 
   const handleAdd = () => {
-    if (!inputVolumes) {
-      setError("Numero del volume necessario!");
-      return;
-    } else if (!inputPrice) {
-      setError("Prezzo necessario!");
-      return;
-    }
     setError(null);
     dispatch(
       addMangaDettaglioAsync({
         id: manga.id,
-        volumes: Number(inputVolumes),
+        volumes: Number(volume.current),
         date: inputDate.format("YYYY-MM-DD"),
         price: Number(inputPrice),
       })
@@ -51,7 +51,6 @@ export default function MangaListDettagliataInput({ manga }) {
     setOpen(true);
     setInputDate(dayjs());
     setInputPrice(0);
-    setInputVolumes(1);
   };
 
   const handleClose = (event, reason) => {
@@ -63,14 +62,25 @@ export default function MangaListDettagliataInput({ manga }) {
 
   return (
     <div className="bg-red-400 ml-5 p-4">
-      <p>Volume</p>
-      <input
-        type="number"
-        min={1}
-        value={inputVolumes}
-        onChange={(e) => setInputVolumes(e.target.value)}
-        className="p-2 border rounded"
-      />
+      <Tooltip
+        title="Il numero del volume viene aggiunto in automatico"
+        placement="top"
+        slotProps={{
+          tooltip: {
+            sx: {
+              backgroundColor: "green",
+              color: "white",
+              padding: "5%",
+              fontSize: "15px",
+            },
+          },
+        }}
+        slots={{
+          transition: Zoom,
+        }}
+      >
+        <TextField value={volume.current} disabled label="Volume" />
+      </Tooltip>
       <br />
       <br />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -81,12 +91,13 @@ export default function MangaListDettagliataInput({ manga }) {
           onChange={(newValue) => setInputDate(newValue)}
         />
       </LocalizationProvider>
-      <p>Prezzo</p>
+      <p>Prezzo (€)</p>
       <input
         type="number"
         min={0}
+        step={0.1}
         value={inputPrice}
-        onChange={(e) => setInputPrice(e.target.value)}
+        onChange={(e) => setInputPrice(Number(e.target.value))}
         className="p-2 border rounded"
       />
       <div className="tooltip">
@@ -98,7 +109,7 @@ export default function MangaListDettagliataInput({ manga }) {
         <span className="tooltip-text">
           {isValid
             ? "Aggiungi alla lista!"
-            : "Scrivi qualcosa per aggiungere..."}
+            : "Inserisci il prezzo per aggiungere il volume"}
         </span>
       </div>
       {error && <p className="text-white">{error}</p>}
