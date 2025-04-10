@@ -93,7 +93,7 @@ export default function MangaListInput() {
     setInputAuthor("");
     setCheckCompleted(false);
     setOpen(true);
-    setOpenWarningSameTitle(true);
+    setOpenWarningSameTitle(false);
   };
 
   const handleClose = (event, reason) => {

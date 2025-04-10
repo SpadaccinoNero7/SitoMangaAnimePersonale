@@ -222,7 +222,9 @@ function Row(props) {
                   align="right"
                   sx={{ width: "100%" }}
                 >
-                  Volumi acquistati:{row.detailsMangas.length}
+                  {row?.detailsMangas?.length > 0
+                    ? `Volumi acquistati: ${row?.detailsMangas?.length}`
+                    : "Non sono presenti volumi in lista!"}
                 </Typography>
               </Box>
             </Box>
