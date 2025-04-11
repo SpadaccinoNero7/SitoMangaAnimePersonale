@@ -296,10 +296,7 @@ export default function MangaList() {
       </div>
       <div className="w-[50%]">
         {data.length != 0 ? (
-          <TableContainer
-            component={Paper}
-            /* sx={{ width: "50%", position: "absolute", top: "35%", right: "5%" }} */
-          >
+          <TableContainer component={Paper}>
             <Table
               aria-label="collapsible table"
               size={width <= 1272 ? "small" : "medium"}
@@ -351,6 +348,9 @@ export default function MangaList() {
                     <Link to="/">
                       <HomeIcon />
                     </Link>
+                  </TableCell>
+                  <TableCell className=" justify-items-end">
+                    <h1 className="font-bold">Manga totali: {data.length}</h1>
                   </TableCell>
                   <TablePagination
                     rowsPerPageOptions={[]}
