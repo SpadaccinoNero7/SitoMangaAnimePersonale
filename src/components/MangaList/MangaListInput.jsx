@@ -103,7 +103,6 @@ export default function MangaListInput() {
     setOpen(false);
     setOpenWarningSameTitle(false);
   };
-  /* aihscia */
 
   return (
     <div className="bg-red-400 w-fit p-4">
