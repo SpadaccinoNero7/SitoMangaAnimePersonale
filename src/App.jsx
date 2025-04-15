@@ -9,13 +9,15 @@ import { getMangaAsync } from "./components/MangaList/mangaSlice";
 function App() {
   const anime = useSelector((state) => state.anime.data);
   const manga = useSelector((state) => state.manga.data);
+
   const animeCompleted = [];
   const x = anime.map((el) => el.completed);
   const arrayCompletedAnime = x.filter((el) => el === false);
   animeCompleted.push(arrayCompletedAnime);
+
   const mangaCompleted = [];
   const y = manga.map((el) => el.completed);
-  const arrayCompletedManga = x.filter((el) => el === false);
+  const arrayCompletedManga = y.filter((el) => el === false);
   mangaCompleted.push(arrayCompletedManga);
 
   const dispatch = useDispatch();
