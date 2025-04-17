@@ -217,7 +217,7 @@ function Row(props) {
                   {editModes[row.id] ? "Modifica in corso..." : "Modifica"}
                 </Typography>
                 <Link
-                  to={`/dettaglio/${row.refExtId}`}
+                  to={`/dettaglioManga/${row.refExtId}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Typography variant="h6" gutterBottom>

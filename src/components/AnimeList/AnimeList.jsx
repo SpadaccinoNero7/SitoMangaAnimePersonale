@@ -28,6 +28,7 @@ import NoData from "../infoComponents/NoData";
 import DeleteConfirm from "../infoComponents/DeleteConfirm";
 import AnimePutGrande from "./AnimePutGrande";
 import ChangeCompleteStatus from "../infoComponents/ChangeCompleteStatus";
+import { Typography } from "@mui/material";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -275,7 +276,14 @@ export default function AnimeList() {
                                   <strong>Modifica in corso...</strong>
                                 </>
                               ) : (
-                                `${anime.title}`
+                                <Link
+                                  to={`/dettaglioAnime/${anime.refExtId}`}
+                                  style={{ textDecoration: "none" }}
+                                >
+                                  <Typography variant="p" gutterBottom>
+                                    {anime.title}
+                                  </Typography>
+                                </Link>
                               )}
                             </TableCell>
                             <TableCell align="right">

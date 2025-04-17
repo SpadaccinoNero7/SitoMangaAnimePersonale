@@ -50,7 +50,6 @@ const animeSlice = createSlice({
     data: [],
     loading: false,
     error: null,
-    count: 0,
   },
   reducers: {
     setSelectedAnimeId: (state, action) => {
@@ -77,7 +76,6 @@ const animeSlice = createSlice({
       })
       .addCase(deleteAnimeAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.count--;
         state.data = state.data.filter((anime) => anime.id !== action.payload);
       })
       .addCase(deleteAnimeAsync.rejected, (state, action) => {
