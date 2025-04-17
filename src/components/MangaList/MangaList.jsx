@@ -203,7 +203,7 @@ function Row(props) {
                   style={{ textDecoration: "none" }}
                 >
                   <Typography variant="h6" gutterBottom>
-                    Dettaglio
+                    Gestisci volumi
                   </Typography>
                 </Link>
                 <Typography
@@ -216,11 +216,19 @@ function Row(props) {
                 >
                   {editModes[row.id] ? "Modifica in corso..." : "Modifica"}
                 </Typography>
+                <Link
+                  to={`/dettaglio/${row.refExtId}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Dettagli
+                  </Typography>
+                </Link>
                 <Typography
                   variant="h6"
                   gutterBottom
                   align="right"
-                  sx={{ width: "100%" }}
+                  sx={{ width: "50%" }}
                 >
                   {row?.detailsMangas?.length > 0
                     ? `Volumi acquistati: ${row?.detailsMangas?.length}`

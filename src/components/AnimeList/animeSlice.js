@@ -37,6 +37,7 @@ export const addAnimeAsync = createAsyncThunk(
       id: 0,
       title: payload.title,
       completed: payload.completed,
+      refExtId: payload.refExtId,
     });
     return response.data;
   }

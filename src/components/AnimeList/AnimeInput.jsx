@@ -74,6 +74,7 @@ export default function AnimeInput() {
       addAnimeAsync({
         title: animeTitle,
         completed: checkCompleted,
+        refExtId: input.mal_id,
       })
     );
     setInput("");

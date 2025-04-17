@@ -87,6 +87,7 @@ export default function MangaListInput() {
         title: inputTitle,
         author: inputAuthor,
         completed: checkCompleted,
+        refExtId: selectedOption.mal_id,
       })
     );
     setSelectedOption("");

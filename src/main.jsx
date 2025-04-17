@@ -8,8 +8,7 @@ import MangaList from "./components/MangaList/MangaList.jsx";
 import MangaListDettagliata from "./components/MangaList/MangaListDettagliata.jsx";
 import { Provider } from "react-redux";
 import { store } from "./store/store.js";
-import Test from "./components/test.jsx";
-import TestDettaglio from "./components/TestDettaglio.jsx";
+import DettaglioManga from "./components/DettaglioManga.jsx";
 import AnimeDettaglio from "./components/AnimeList/AnimeDettaglio.jsx";
 
 createRoot(document.getElementById("root")).render(
@@ -25,9 +24,7 @@ createRoot(document.getElementById("root")).render(
             path="singleManga/:mangaId"
             element={<MangaListDettagliata />}
           />
-          <Route path="test" element={<Test />}>
-            <Route path=":mal_id" element={<TestDettaglio />} />
-          </Route>
+          <Route path="dettaglio/:mal_id" element={<DettaglioManga />} />
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -39,6 +39,7 @@ export const addMangaAsync = createAsyncThunk(
       title: payload.title,
       author: payload.author,
       completed: payload.completed,
+      refExtId: payload.refExtId,
     });
     return response.data;
   }
