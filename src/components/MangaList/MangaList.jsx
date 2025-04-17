@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -32,7 +31,6 @@ import { useEffect, useState } from "react";
 import Loading from "../infoComponents/Loading";
 import Error from "../infoComponents/Error";
 import NoData from "../infoComponents/NoData";
-import MangaListPut from "./MangaListPut";
 import DeleteConfirm from "../infoComponents/DeleteConfirm";
 import ChangeCompleteStatus from "../infoComponents/ChangeCompleteStatus";
 

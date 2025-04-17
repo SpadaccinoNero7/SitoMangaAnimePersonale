@@ -18,7 +18,7 @@ export default function MangaListInput() {
   const [checkCompleted, setCheckCompleted] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openWarningSameTitle, setOpenWarningSameTitle] = useState(false);
+  const [openWarningSameId, setOpenWarningSameId] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const dispatch = useDispatch();
 
@@ -29,7 +29,8 @@ export default function MangaListInput() {
   );
 
   const mangaTotal = useSelector((state) => state.manga.data);
-  const x = mangaTotal.map((el) => el.title);
+  const x = mangaTotal.map((el) => el.refExtId);
+  console.log(x);
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
@@ -74,8 +75,9 @@ export default function MangaListInput() {
   }, [inputTitle, inputAuthor]);
 
   const handleAdd = () => {
-    if (x.find((el) => el === inputTitle)) {
-      setOpenWarningSameTitle(true);
+    console.log("x", x);
+    if (x.find((el) => el === data.data.mal_id)) {
+      setOpenWarningSameId(true);
       setSelectedOption("");
       setInputAuthor("");
       return;
@@ -94,7 +96,7 @@ export default function MangaListInput() {
     setInputAuthor("");
     setCheckCompleted(false);
     setOpen(true);
-    setOpenWarningSameTitle(false);
+    setOpenWarningSameId(false);
   };
 
   const handleClose = (event, reason) => {
@@ -102,7 +104,7 @@ export default function MangaListInput() {
       return;
     }
     setOpen(false);
-    setOpenWarningSameTitle(false);
+    setOpenWarningSameId(false);
   };
 
   return (
@@ -195,7 +197,7 @@ export default function MangaListInput() {
         text={"Aggiunto con successo!"}
       />
       <SnackBar
-        open={openWarningSameTitle}
+        open={openWarningSameId}
         duration={3000}
         close={handleClose}
         severity={"warning"}
