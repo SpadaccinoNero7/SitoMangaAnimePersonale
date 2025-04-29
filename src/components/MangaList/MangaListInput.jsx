@@ -30,7 +30,6 @@ export default function MangaListInput() {
 
   const mangaTotal = useSelector((state) => state.manga.data);
   const x = mangaTotal.map((el) => el.refExtId);
-  console.log(x);
 
   const handleChange = (event, value) => {
     setCurrentPage(value);
@@ -75,7 +74,6 @@ export default function MangaListInput() {
   }, [inputTitle, inputAuthor]);
 
   const handleAdd = () => {
-    console.log("x", x);
     if (x.find((el) => el === data.data.mal_id)) {
       setOpenWarningSameId(true);
       setSelectedOption("");
