@@ -40,11 +40,11 @@ export default function DettaglioAnime() {
     },
     {
       original: "winter",
-      transalted: "Inverno",
+      translated: "Inverno",
     },
     {
       original: "spring",
-      transalted: "Primavera",
+      translated: "Primavera",
     },
     {
       original: "fall",
@@ -61,26 +61,38 @@ export default function DettaglioAnime() {
         <h1>
           Dettagli <strong>{data.data.title_english || data.data.title}</strong>
         </h1>
-        <p>Titolo originale: {data.data.title}</p>
-        <p>Generi: {data.data.genres.map((el) => el.name).join(", ")}</p>
         <p>
-          Episodi totali:{" "}
+          <strong>Titolo originale</strong>: {data.data.title}
+        </p>
+        <p>
+          <strong>Generi</strong>:{" "}
+          {data.data.genres.map((el) => el.name).join(", ")}
+        </p>
+        <p>
+          <strong>Episodi totali</strong>:{" "}
           {data.data.episodes ? data.data.episodes : "Non ancora specificato"}
         </p>
-        <p>Stato: {stato}</p>
         <p>
-          Punteggio:{" "}
+          <strong>Stato</strong>: {stato}
+        </p>
+        <p>
+          <strong>Punteggio</strong>:{" "}
           {data.data.score
             ? `${data.data.score} / 10 con ${data.data.scored_by} recensioni`
             : "Non ancora disponibile"}
         </p>
-        <p>Tipologia: {data.data.type}</p>
         <p>
-          Adattamento:{" "}
+          <strong>Rank</strong>: {data.data.rank}
+        </p>
+        <p>
+          <strong>Tipologia</strong>: {data.data.type}
+        </p>
+        <p>
+          <strong>Adattamento</strong>:{" "}
           {data.data.relations[0].entry.map((el) => el.name).join(", ")}
         </p>
         <p>
-          Anno di uscita: {stagione} {""}
+          <strong>Anno di uscita</strong>: {stagione} {""}
           {data.data.year}
         </p>
       </div>
