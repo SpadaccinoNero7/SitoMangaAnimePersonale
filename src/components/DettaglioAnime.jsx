@@ -8,11 +8,13 @@ export default function DettaglioAnime() {
     `https://api.jikan.moe/v4/anime/${params.mal_id}/full`
   );
 
+  const image = useFetch(
+    `https://api.jikan.moe/v4/anime/${params.mal_id}/pictures`
+  );
+
   if (loading) {
     return <Loading />;
   }
-
-  console.log(data);
 
   const status = [
     {
@@ -51,21 +53,30 @@ export default function DettaglioAnime() {
       translated: "Autunno",
     },
   ];
+  console.log(data);
 
   const stagione =
     seasons.find((el) => el.original === data.data.season)?.translated ||
     "Stagione sconosciuta";
   return (
-    <>
+    <div className="flex justify-around items-center">
+      <img
+        src={data.data.images.jpg.large_image_url}
+        alt="Immagine copertina"
+      />
       <div className="flex flex-col">
-        <h1>
+        <h1 className="self-center mb-5">
           Dettagli <strong>{data.data.title_english || data.data.title}</strong>
         </h1>
         <p>
           <strong>Titolo originale</strong>: {data.data.title}
         </p>
         <p>
-          <strong>Generi</strong>:{" "}
+          {data.data.genres.length > 1 ? (
+            <strong>Generi: </strong>
+          ) : (
+            <strong>Genere: </strong>
+          )}
           {data.data.genres.map((el) => el.name).join(", ")}
         </p>
         <p>
@@ -82,21 +93,26 @@ export default function DettaglioAnime() {
             : "Non ancora disponibile"}
         </p>
         <p>
-          <strong>Rank</strong>: {data.data.rank}
+          <strong>Rank</strong>:{" "}
+          {data.data.rank ? data.data.rank : "Non ancora disponibile"}
         </p>
         <p>
           <strong>Tipologia</strong>: {data.data.type}
         </p>
         <p>
           <strong>Adattamento</strong>:{" "}
-          {data.data.relations[0].entry.map((el) => el.name).join(", ")}
+          <a
+            target="_blank"
+            href={data.data.relations[0].entry.map((el) => el.url)}
+          >
+            {data.data.relations[0].entry.map((el) => el.name).join(", ")}
+          </a>
         </p>
         <p>
           <strong>Anno di uscita</strong>: {stagione} {""}
           {data.data.year}
         </p>
       </div>
-      <img src={data.data.images.jpg.image_url} alt="Immagine copertina" />
-    </>
+    </div>
   );
 }
