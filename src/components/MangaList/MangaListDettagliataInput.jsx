@@ -7,24 +7,21 @@ import { useEffect, useRef, useState } from "react";
 import BlockIcon from "@mui/icons-material/Block";
 import "../AnimeList/HoverTextCheckbox.css";
 import { useDispatch } from "react-redux";
-import { addMangaDettaglioAsync } from "./mangaDettaglioSlice";
+import {
+  addMangaDettaglioAsync,
+  getMangaDettaglioAsync,
+} from "./mangaDettaglioSlice";
 import SnackBar from "../infoComponents/SnackBarComponent";
-import { TextField, Tooltip, Zoom } from "@mui/material";
+import ChooseVolumes from "./ChooseVolumes";
 
 export default function MangaListDettagliataInput({ manga }) {
-  const volume = useRef(1);
+  const volume = useRef();
   const [inputPrice, setInputPrice] = useState(0);
   const [inputDate, setInputDate] = useState(dayjs());
   const [error, setError] = useState(null);
   const [isValid, setIsValid] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (manga?.detailsMangas) {
-      volume.current = manga.detailsMangas.length + 1;
-    }
-  }, [manga]);
 
   const handleValidation = () => {
     if (inputPrice) {
@@ -48,6 +45,7 @@ export default function MangaListDettagliataInput({ manga }) {
         price: Number(inputPrice),
       })
     );
+    dispatch(getMangaDettaglioAsync(manga.id));
     setOpen(true);
     setInputDate(dayjs());
     setInputPrice(0);
@@ -62,25 +60,13 @@ export default function MangaListDettagliataInput({ manga }) {
 
   return (
     <div className="bg-red-400 ml-5 p-4">
-      <Tooltip
-        title="Il numero del volume viene aggiunto in automatico"
-        placement="top"
-        slotProps={{
-          tooltip: {
-            sx: {
-              backgroundColor: "green",
-              color: "white",
-              padding: "5%",
-              fontSize: "15px",
-            },
-          },
+      <ChooseVolumes
+        values={manga?.refExtId}
+        handleAccept={(newValue) => {
+          volume.current = newValue;
+          console.log("Volume selezionato:", newValue);
         }}
-        slots={{
-          transition: Zoom,
-        }}
-      >
-        <TextField value={volume.current} disabled label="Volume" />
-      </Tooltip>
+      />
       <br />
       <br />
       <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -21,21 +21,15 @@ import { Link, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MangaListDettagliataInput from "./MangaListDettagliataInput";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMangaAsync, getMangaAsync, putMangaAsync } from "./mangaSlice";
+import { deleteMangaAsync, getMangaAsync } from "./mangaSlice";
 import { useEffect, useMemo, useState } from "react";
 import Loading from "../infoComponents/Loading";
 import NoData from "../infoComponents/NoData";
 import MangaDettaglioPut from "./MangaDettaglioPut";
-import { putMangaDettaglioAsync } from "./mangaDettaglioSlice";
-
-/* function createData(id, volumes, date, price) {
-  return {
-    id,
-    volumes,
-    date,
-    price,
-  };
-} */
+import {
+  getMangaDettaglioAsync,
+  putMangaDettaglioAsync,
+} from "./mangaDettaglioSlice";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -75,14 +69,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    /* numSelected, */
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -118,7 +105,6 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  /* numSelected: PropTypes.number.isRequired, */
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
@@ -208,18 +194,13 @@ export default function MangaListDettagliata() {
     }));
   };
 
-  /*   const { data } = useFetch("http://localhost:8080/manga/manga");
-  const mangaId = data ? Number(params.mangaId) : null;
-  
-  const manga = data ? data.find(({ id }) => id === mangaId) : null;
-  const mangaDetails = manga ? manga.detailsMangas : []; */
-
   const dispatch = useDispatch();
 
   const { data } = useSelector((state) => state.manga);
 
   useEffect(() => {
     dispatch(getMangaAsync());
+    dispatch(getMangaDettaglioAsync(Number(params.mangaId)));
   }, [dispatch]);
 
   const mangaId = data ? Number(params.mangaId) : null;

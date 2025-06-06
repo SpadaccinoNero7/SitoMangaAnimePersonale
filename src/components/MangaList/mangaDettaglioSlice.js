@@ -2,6 +2,16 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import URL_PORT from "../infoComponents/port";
 
+export const getMangaDettaglioAsync = createAsyncThunk(
+  "manga/getMangaDettaglioAsync",
+  async (payload) => {
+    const response = await axios.get(
+      `${URL_PORT}/detailsManga/detailsManga/${payload.id}/details`
+    );
+    return response.data;
+  }
+);
+
 export const addMangaDettaglioAsync = createAsyncThunk(
   "manga/addMangaDettaglioAsync",
   async (payload) => {
@@ -57,6 +67,18 @@ const mangaDettaglioSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(getMangaDettaglioAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMangaDettaglioAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(getMangaDettaglioAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
       .addCase(addMangaDettaglioAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
