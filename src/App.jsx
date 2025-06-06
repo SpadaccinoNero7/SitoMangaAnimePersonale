@@ -29,8 +29,8 @@ function App() {
 
   return (
     <div className="flex flex-col justify-around bg-black h-[100vh] w-[100vw] text-white">
-      <div className=" border-white border self-center">
-        <h1>HomePage</h1>
+      <div className="self-center">
+        <h1>Collezione Anime & Manga</h1>
       </div>
       <div className="flex justify-around items-center">
         <div className="bg-cover bg-center w-full m-[5%] relative group">
@@ -76,7 +76,7 @@ function App() {
                 <br />
                 {arrayCompletedManga.length > 0
                   ? `Manga non terminati: ${arrayCompletedManga.length}`
-                  : "Hai terminato tutti i manga inseriti!"}
+                  : "Hai terminato tutti i manga presenti in lista!"}
               </div>
             </Link>
           </div>
