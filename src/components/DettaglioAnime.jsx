@@ -1,14 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFetch } from "./customHooks/useFetch";
 import Loading from "./infoComponents/Loading";
-import { useBack } from "../useBack";
+import { Tooltip } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import HomeIcon from "@mui/icons-material/Home";
 
 export default function DettaglioAnime() {
   const params = useParams();
   const { data, loading } = useFetch(
     `https://api.jikan.moe/v4/anime/${params.mal_id}/full`
   );
-  const back = useBack;
+  const navigate = useNavigate();
 
   if (loading) {
     return <Loading />;
@@ -51,27 +53,21 @@ export default function DettaglioAnime() {
       translated: "Autunno",
     },
   ];
-  console.log(data);
 
   const stagione =
     seasons.find((el) => el.original === data.data.season)?.translated ||
     "Stagione sconosciuta";
 
   return (
-    <>
-      <div>
-        <button onClick={() => back(-1)}>Indietro</button>
+    <div className="flex flex-col justify-center items-center">
+      <div className="flex justify-center items-center m-25">
+        <strong>{data.data.title_english || data.data.title}</strong>
       </div>
-      <div className="flex justify-around items-center">
-        <img
-          src={data.data.images.jpg.large_image_url}
-          alt="Immagine copertina"
-        />
+      <div className="flex justify-between h-100 items-center border-2 border-gray-300 rounded-lg p-5 relative">
+        <div className="flex justify-center items-center mr-5">
+          <img src={data.data.images.jpg.image_url} alt="Immagine copertina" />
+        </div>
         <div className="flex flex-col">
-          <h1 className="self-center mb-5">
-            Dettagli{" "}
-            <strong>{data.data.title_english || data.data.title}</strong>
-          </h1>
           <p>
             <strong>Titolo originale</strong>: {data.data.title}
           </p>
@@ -104,20 +100,60 @@ export default function DettaglioAnime() {
             <strong>Tipologia</strong>: {data.data.type}
           </p>
           <p>
-            <strong>Adattamento</strong>:{" "}
-            <a
-              target="_blank"
-              href={data.data.relations[0].entry.map((el) => el.url)}
-            >
-              {data.data.relations[0].entry.map((el) => el.name).join(", ")}
-            </a>
+            <strong>Adattato da</strong>: {data.data.source}
           </p>
+          {data.data.relations.find((el) => el.relation === "Prequel") ? (
+            <p>
+              <strong>Prequel</strong>:{" "}
+              <a
+                target="_blank"
+                href={
+                  data.data.relations.find((el) => el.relation === "Prequel")
+                    .entry[0].url
+                }
+              >
+                {
+                  data.data.relations.find((el) => el.relation === "Prequel")
+                    .entry[0].name
+                }
+              </a>
+            </p>
+          ) : null}
+          {data.data.relations.find((el) => el.relation === "Sequel") ? (
+            <p>
+              <strong>Sequel</strong>:{" "}
+              <a
+                target="_blank"
+                href={
+                  data.data.relations.find((el) => el.relation === "Sequel")
+                    .entry[0].url
+                }
+              >
+                {
+                  data.data.relations.find((el) => el.relation === "Sequel")
+                    .entry[0].name
+                }
+              </a>
+            </p>
+          ) : null}
           <p>
             <strong>Anno di uscita</strong>: {stagione} {""}
             {data.data.year}
           </p>
         </div>
       </div>
-    </>
+      <div className="flex justify-around items-center absolute bottom-0 w-full p-5">
+        <div onClick={() => navigate(-1)}>
+          <Tooltip title="Torna indietro">
+            <ArrowBackIcon className="cursor-pointer" />
+          </Tooltip>
+        </div>
+        <div onClick={() => navigate("/")}>
+          <Tooltip title="Torna alla home">
+            <HomeIcon className="cursor-pointer" />
+          </Tooltip>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,10 @@
-import { useParams } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import HomeIcon from "@mui/icons-material/Home";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFetch } from "./customHooks/useFetch";
 import Loading from "./infoComponents/Loading";
+import { Tooltip } from "@mui/material";
+import ChooseAnime from "./MangaList/ChooseAnime";
 
 export default function DettaglioManga() {
   const params = useParams();
@@ -8,17 +12,21 @@ export default function DettaglioManga() {
     `https://api.jikan.moe/v4/manga/${params.mal_id}/full`
   );
 
+  const navigate = useNavigate();
+
   if (loading) {
     return <Loading />;
   }
   return (
-    <>
-      <div className="flex justify-around items-center">
+    <div className="flex flex-col justify-center items-center">
+      <div className="flex justify-center items-center m-25">
+        <strong>{data.data.title_english || data.data.title}</strong>
+      </div>
+      <div className="flex justify-between h-100 items-center border-2 border-gray-300 rounded-lg p-5 relative">
+        <div className="flex justify-center items-center mr-5">
+          <img src={data.data.images.jpg.image_url} alt="Immagine copertina" />
+        </div>
         <div className="flex flex-col">
-          <h1 className="self-center mb-5">
-            Dettagli{" "}
-            <strong>{data.data.title_english || data.data.title}</strong>
-          </h1>
           <p>
             <strong>Titolo originale</strong>: {data.data.title}
           </p>
@@ -43,22 +51,68 @@ export default function DettaglioManga() {
             : {data.data.chapters ? data.data.chapters : "Non terminato"}
           </p>
           <p>
-            <strong>Punteggio</strong>: {data.data.score} / 10 con{" "}
-            {data.data.scored_by} recensioni
+            <strong>Punteggio</strong>:{" "}
+            {data.data.score
+              ? `${data.data.score} / 10 con ${data.data.scored_by} recensioni`
+              : "Non ancora disponibile"}
           </p>
           <p>
-            <strong>Rank</strong>: {data.data.rank}
+            <strong>Rank</strong>:{" "}
+            {data.data.rank ? data.data.rank : "Non ancora disponibile"}
           </p>
           <p>
             <strong>Tipologia</strong>: {data.data.type}
           </p>
-          <p>
-            <strong>Anime</strong>:{" "}
-            {data.data.relations[0].entry.map((el) => el.name).join(", ")}
-          </p>
+          {data.data.relations.find((el) => el.relation === "Adaptation") ? (
+            <p>
+              <strong>Adattamento</strong>:{" "}
+              <a
+                target="_blank"
+                href={
+                  data.data.relations.find((el) => el.relation === "Adaptation")
+                    .entry[0].url
+                }
+              >
+                {
+                  data.data.relations.find((el) => el.relation === "Adaptation")
+                    .entry[0].name
+                }
+              </a>
+            </p>
+          ) : null}
+          {data.data.relations.find((el) => el.relation === "Adaptation").entry
+            .length > 2 ? (
+            <p>
+              <strong>Anime</strong>:{" "}
+              {data.data.relations.find((el) => el.relation === "Adaptation")
+                .entry.length > 0 ? (
+                <ChooseAnime values={data.data.mal_id} />
+              ) : (
+                <>
+                  <a
+                    target="_blank"
+                    href={data.data.relations[0].entry.map((el) => el.url)}
+                  >
+                    Vedi il primo di molti
+                  </a>
+                </>
+              )}
+            </p>
+          ) : null}
         </div>
       </div>
-      <img src={data.data.images.jpg.image_url} alt="Immagine copertina" />
-    </>
+      <div className="flex justify-around items-center absolute bottom-0 w-full p-5">
+        <div onClick={() => navigate(-1)}>
+          <Tooltip title="Torna indietro">
+            <ArrowBackIcon className="cursor-pointer" />
+          </Tooltip>
+        </div>
+        <div onClick={() => navigate("/")}>
+          <Tooltip title="Torna alla home">
+            <HomeIcon className="cursor-pointer" />
+          </Tooltip>
+        </div>
+      </div>
+    </div>
   );
 }
