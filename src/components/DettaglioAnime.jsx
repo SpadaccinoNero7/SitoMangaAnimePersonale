@@ -4,6 +4,7 @@ import Loading from "./infoComponents/Loading";
 import { Tooltip } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import HomeIcon from "@mui/icons-material/Home";
+import AdattamentoType from "./AdattamentoType";
 
 export default function DettaglioAnime() {
   const params = useParams();
@@ -102,40 +103,8 @@ export default function DettaglioAnime() {
           <p>
             <strong>Adattato da</strong>: {data.data.source}
           </p>
-          {data.data.relations.find((el) => el.relation === "Prequel") ? (
-            <p>
-              <strong>Prequel</strong>:{" "}
-              <a
-                target="_blank"
-                href={
-                  data.data.relations.find((el) => el.relation === "Prequel")
-                    .entry[0].url
-                }
-              >
-                {
-                  data.data.relations.find((el) => el.relation === "Prequel")
-                    .entry[0].name
-                }
-              </a>
-            </p>
-          ) : null}
-          {data.data.relations.find((el) => el.relation === "Sequel") ? (
-            <p>
-              <strong>Sequel</strong>:{" "}
-              <a
-                target="_blank"
-                href={
-                  data.data.relations.find((el) => el.relation === "Sequel")
-                    .entry[0].url
-                }
-              >
-                {
-                  data.data.relations.find((el) => el.relation === "Sequel")
-                    .entry[0].name
-                }
-              </a>
-            </p>
-          ) : null}
+          <AdattamentoType data={data} request={"Prequel"} />
+          <AdattamentoType data={data} request={"Sequel"} />
           <p>
             <strong>Anno di uscita</strong>: {stagione} {""}
             {data.data.year}

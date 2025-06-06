@@ -5,6 +5,7 @@ import { useFetch } from "./customHooks/useFetch";
 import Loading from "./infoComponents/Loading";
 import { Tooltip } from "@mui/material";
 import ChooseAnime from "./MangaList/ChooseAnime";
+import AdattamentoType from "./AdattamentoType";
 
 export default function DettaglioManga() {
   const params = useParams();
@@ -63,23 +64,11 @@ export default function DettaglioManga() {
           <p>
             <strong>Tipologia</strong>: {data.data.type}
           </p>
-          {data.data.relations.find((el) => el.relation === "Adaptation") ? (
-            <p>
-              <strong>Adattamento</strong>:{" "}
-              <a
-                target="_blank"
-                href={
-                  data.data.relations.find((el) => el.relation === "Adaptation")
-                    .entry[0].url
-                }
-              >
-                {
-                  data.data.relations.find((el) => el.relation === "Adaptation")
-                    .entry[0].name
-                }
-              </a>
-            </p>
-          ) : null}
+          <AdattamentoType
+            data={data}
+            request={"Adaptation"}
+            title={"Adattamento"}
+          />
           {data.data.relations.find((el) => el.relation === "Adaptation").entry
             .length > 2 ? (
             <p>
